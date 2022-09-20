@@ -1,3 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-image{
+  background-image: "url('./assets/bg-image.png')";
+  height:'100vh',
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,7 +16,55 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.headingQuora{
+  font-family: 'Libre Baskerville', serif;
+}
+.headingQuoras{
+  font-family: 'Libre Baskerville', serif;
+  font-size: 50px;
+}
+
+.screenSize{
+  width: 1123px;
+  height: 52px;
+}
+
+
+.bodySize{
+  width: 1123px;
+  
+}
+
+.activeClass{
+  @apply text-red-800 border-b-4 border-red-800 rounded-b-sm
+}
+
+.search-item{
+  width: 360px;
+}
+
+@media screen and (max-width: 1128px) {
+  .search-item {
+    width: 200px;
+  }
+}
+
+.linkSection{
+ @apply text-sm text-gray-400
+}
+
+.linkItem{
+  @apply hover:underline cursor-pointer
+}
+
+.activeModal{
+  @apply border-blue-600 border-b-4
+}
+
+.dropdownItems{
+  @apply flex my-1 px-4 items-center text-base hover:bg-gray-100 cursor-pointer transition duration-300 h-8
+}
+
+.dropdownSmall{
+  @apply text-left pl-5 h-6  hover:bg-gray-100 cursor-pointer transition duration-300 
 }

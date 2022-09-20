@@ -207,7 +207,7 @@ const Login = () => {
 
                     <section className={`${forgetPassword ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Find Your Account</h2>
-                        <p className='px-5 mt-3 text-sm'>Please enter your rmail to rest your password</p>
+                        <p className='px-5 mt-3 text-sm'>Please enter your email to reset your password</p>
                         <form>
                         <div class="mb-6 px-5 mt-5">
                             <label for="email" class="block mb-2 font-medium  text-gray-900 "></label>

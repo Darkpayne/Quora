@@ -16,8 +16,8 @@ const Navbar = ({navigation}) => {
 
   return (
     <>
-    <nav className={` sticky top-0 py-1 shadow-md bg-white ${searchFocus ? 'z-[51]':'z-[10]' } `}>
-      <nav className='flex  mx-auto screenSize items-center'>
+    <nav className={` sticky top-0 shadow-md  bg-white ${searchFocus ? 'z-[51]':'z-[10]' } `}>
+      <nav className='flex  mx-auto screenSize bg-white w-max items-center'>
         <div className='basis-1/12'>
           <Link to="/">
           <h1  
@@ -44,10 +44,10 @@ const Navbar = ({navigation}) => {
             <ion-icon name="create-outline"></ion-icon>
           </Link>
 
-          <span 
+          <Link to="/spaces" 
            className={`text-2xl text-gray-500 ${navigation === 'spaces' && 'activeClass'} text-center  transition duration-500  cursor-pointer w-[35px]`}>
             <ion-icon name="people-outline"></ion-icon>
-          </span>
+          </Link>
 
           <span 
            className={`text-2xl text-gray-500 ${navigation === 'notification' && 'activeClass'} transition duration-500 cursor-pointer text-center w-[35px]`}>

@@ -49,10 +49,10 @@ const Navbar = ({navigation}) => {
             <ion-icon name="people-outline"></ion-icon>
           </Link>
 
-          <span 
+          <Link to="/notifications" 
            className={`text-2xl text-gray-500 ${navigation === 'notification' && 'activeClass'} transition duration-500 cursor-pointer text-center w-[35px]`}>
             <ion-icon name="notifications-outline"></ion-icon>
-          </span>
+          </Link>
 
           
           <form className="flex">   
@@ -211,7 +211,7 @@ const Navbar = ({navigation}) => {
         </div>
       </nav>
     </nav>
-      <div id="defaultModal" tabindex="-1" aria-hidden="true" data-modal-show="true" className={`${!searchFocus ? 'hidden': ''} bg-slate-900 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}></div>
+      <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!searchFocus ? 'hidden': ''} bg-slate-900 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}></div>
     </>
   )
 }

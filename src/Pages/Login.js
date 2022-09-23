@@ -1,7 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react'
+import axios from '../api/register';
+import useAxios from '../Hooks/useAxios';
+
 
 
 const Login = () => {
+
+    const {response , isLoading , error, axiosFetch} = useAxios();
+
+    // SIGNUP LOGIC
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('')
+
+        
+    const NextVerification = async (e) =>{
+        e.preventDefault();
+        setShowSignup(false);
+        setShowEmailVerification(true)
+        setShowPassVerification(false)
+
+        axiosFetch({
+            axiosInstance : axios,
+            method: 'POST',
+            url : '/api/auth/register',
+            requestConfig : {
+                    name,
+                    email
+            }
+        })
+
+    }
+
 
     const PWD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 
@@ -24,12 +53,6 @@ const Login = () => {
     const [showError, setShowError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('');
 
-    const NextVerification = (e) =>{
-        e.preventDefault();
-        setShowSignup(false);
-        setShowEmailVerification(true)
-        setShowPassVerification(false)
-    }
 
     const ShowlastModal =(e)=>{
         e.preventDefault();
@@ -60,7 +83,7 @@ const Login = () => {
     }, [password, showModal])
 
   return (
-    <div className="h-screen flex justify-center items-center" style={{backgroundImage:"url('./assets/bg-image.png')"}}>
+    <div className="h-screen w-screen flex justify-center items-center" style={{backgroundImage:"url('./assets/bg-image.png')"}}>
 
        <div className="bg-white w-[700px] h-[548px]">
 
@@ -101,20 +124,20 @@ const Login = () => {
             <div className="basis-1/2 px-5 border-l mb-5" >
                 <h2 className='font-bold text-gray-500 border-b pb-2 mb-3'>Login</h2>
                     <form >
-                        <div class="mb-6">
-                            <label for="email" class="block mb-2 text-sm text-gray-600 font-bold">Email</label>
-                            <input type="email" name="email" id="email" placeholder="you@company.com" class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none " />
+                        <div className="mb-6">
+                            <label for="email1" className="block mb-2 text-sm text-gray-600 font-bold">Email</label>
+                            <input type="email"  id="email1" placeholder="you@company.com" className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none " />
                         </div>
-                        <div class="mb-6">
-                            <div class="flex justify-between mb-2">
-                                <label for="password" class="text-sm text-gray-600 font-bold">Password</label>
+                        <div className="mb-6">
+                            <div className="flex justify-between mb-2">
+                                <label for="password" className="text-sm text-gray-600 font-bold">Password</label>
                                 
                             </div>
-                            <input type="password" name="password" id="password" placeholder="Your Password" class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none" />
+                            <input type="password"  id="password1" placeholder="Your Password" className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none" />
                         </div>
-                        <div class="mb-6 flex justify-between items-center">
-                        <span onClick={ForgetPassword} class="text-sm text-gray-400 focus:outline-none focus:text-indigo-500 hover:text-indigo-500 cursor-pointer dark:hover:text-indigo-300">Forgot password?</span>
-                            <button type="button" class=" px-5 py-1 text-white bg-indigo-500 rounded-full focus:bg-indigo-600 focus:outline-none cursor-not-allowed">Login</button>
+                        <div className="mb-6 flex justify-between items-center">
+                        <span onClick={ForgetPassword} className="text-sm text-gray-400 focus:outline-none focus:text-indigo-500 hover:text-indigo-500 cursor-pointer dark:hover:text-indigo-300">Forgot password?</span>
+                            <button type="button" className=" px-5 py-1 text-white bg-indigo-500 rounded-full focus:bg-indigo-600 focus:outline-none cursor-not-allowed">Login</button>
                         </div>
                     </form>
             </div>
@@ -148,37 +171,55 @@ const Login = () => {
        </div>
 
        {/* MODAL */}
-        <div id="defaultModal" tabindex="-1" aria-hidden="true" data-modal-show="true" class={`${!showModal ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
-            <div class={`relative p-4 w-full max-w-2xl h-full md:h-auto transition-all ease-in-out ${!showModal?'opacity-0 ':'opacity-100 '}`}>
+        <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!showModal ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
+            <div className={`relative p-4 w-full max-w-2xl h-full md:h-auto transition-all ease-in-out ${!showModal?'opacity-0 ':'opacity-100 '}`}>
             
-                <div class="relative bg-white rounded-lg shadow">
+                <div className="relative bg-white rounded-lg shadow">
                     
-                    <div class="flex px-3 pt-2 space-x-2 items-center rounded-t ">
-                        <button onClick={()=>setShowModal(false)} type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-xl p-1.5 inline-flex items-center " data-modal-toggle="defaultModal">
-                            <svg aria-hidden="true" class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                            <span class="sr-only">Close modal</span>
+                    <div className="flex px-3 pt-2 space-x-2 items-center rounded-t ">
+                        <button onClick={()=>setShowModal(false)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-xl p-1.5 inline-flex items-center " data-modal-toggle="defaultModal">
+                            <svg aria-hidden="true" className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                            <span className="sr-only">Close modal</span>
                         </button>
                     </div>
 
                     <section className={`${showSignup ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
-                        <form>
-                        <div class="mb-6 px-5 mt-5">
-                            <label for="name" class="block mb-2 font-medium  text-gray-900 ">Your Name</label>
-                            <input type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='What would you like to be called?' autoComplete='off' required/>
+                        <form onSubmit={NextVerification}>
+                        <div className="mb-6 px-5 mt-5">
+                            <label for="1name" className="block mb-2 font-medium  text-gray-900 ">Your Name</label>
+                            <input 
+                            type="text" 
+                            value={name}
+                            onChange={(e)=>setName(e.target.value)}
+                            id="1name" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                            placeholder='What would you like to be called?' 
+                            autoComplete='off' 
+                            required/>
                         </div>
-                        <div class="mb-6 px-5 ">
-                            <label for="email" class="block mb-2 font-medium  text-gray-900 ">Your email</label>
-                            <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Your email" autoComplete='off' required/>
+                        <div className="mb-6 px-5 ">
+                            <label for="1email" className="block mb-2 font-medium  text-gray-900 ">Your email</label>
+                            <input 
+                            type="email" 
+                            value={email}
+                            onChange={(e)=>setEmail(e.target.value)}
+                            id="1email" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                            placeholder="Your email" 
+                            autoComplete='off' 
+                            required/>
                         </div>
                     {/* Buttons */}
                    
-                            <div class=" flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
+                            <div className=" flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
                         
 
                         
                 
-                        <button onClick={NextVerification} type="button" class="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
+                        <button  
+                        // onClick={NextVerification} 
+                        type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
                             </div>
                         
                             </form>
@@ -189,16 +230,16 @@ const Login = () => {
                         <h2 className='px-5 mt-3 text-2xl'>Confirm your email</h2>
                         <p className='px-5 mt-3 text-sm'>Please enter the code we sent to info@vivian.com</p>
                         <form>
-                        <div class="mb-6 px-5 mt-5">
-                            <label for="name" class="block mb-2 font-medium  text-gray-900 "></label>
-                            <input type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='What would you like to be called?' autoComplete='off' required/>
+                        <div className="mb-6 px-5 mt-5">
+                            <label for="name" className="block mb-2 font-medium  text-gray-900 "></label>
+                            <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='What would you like to be called?' autoComplete='off' required/>
 
                         </div>    
                         <p className='text-xs px-5 mb-10 text-gray-500 hover:underline cursor-pointer'>Didn't recieve an email or something went wrong? Resend Code</p>
                     {/* Buttons */}
                    
-                            <div class="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
-                                <button onClick={ShowlastModal} data-modal-toggle="defaultModal" type="button" class="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
+                            <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
+                                <button onClick={ShowlastModal} data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
                             </div>
                         
                             </form>
@@ -209,16 +250,16 @@ const Login = () => {
                         <h2 className='px-5 mt-3 text-2xl'>Find Your Account</h2>
                         <p className='px-5 mt-3 text-sm'>Please enter your email to reset your password</p>
                         <form>
-                        <div class="mb-6 px-5 mt-5">
-                            <label for="email" class="block mb-2 font-medium  text-gray-900 "></label>
-                            <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Your email' autoComplete='off' required/>
+                        <div className="mb-6 px-5 mt-5">
+                            <label for="email" className="block mb-2 font-medium  text-gray-900 "></label>
+                            <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Your email' autoComplete='off' required/>
 
                         </div>    
                         <div className="h-32"></div>
                     {/* Buttons */}
                    
-                            <div class="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
-                                <button  data-modal-toggle="defaultModal" type="button" class="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Submit</button>
+                            <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
+                                <button  data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Submit</button>
                             </div>
                         
                             </form>
@@ -227,8 +268,8 @@ const Login = () => {
                     <section className={`${showPassVerification ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
                         <form>
-                        <div class="mb-8  mt-5">
-                            <label for="password" class=" mb-2 font-medium  text-gray-900 flex justify-between px-5"> 
+                        <div className="mb-8  mt-5">
+                            <label for="password" className=" mb-2 font-medium  text-gray-900 flex justify-between px-5"> 
                                 <span className='flex'>
                                     <span className='first-letter:'>
                                         Password 
@@ -254,7 +295,7 @@ const Login = () => {
                             onFocus={()=>setPassFocus(true)}
                             onChange={(e)=>setPassword(e.target.value)}
                             value={password}
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autoComplete='off' required/>
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autoComplete='off' required/>
                             </div>
                         {/* display error message */}
                         <p ref={errRef} className={`mt-2 text-sm font-semibold text text-red-600 px-5 mb-10  ${passFocus && !validPass ? 'flex':'hidden'} flex items-start`}>
@@ -273,8 +314,8 @@ const Login = () => {
 
                     {/* Buttons */}
                    
-                            <div class="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
-                                <button data-modal-toggle="defaultModal" type="button" class="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Finish</button>
+                            <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
+                                <button data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Finish</button>
                             </div>
                         
                             </form>

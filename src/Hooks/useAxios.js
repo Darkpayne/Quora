@@ -1,12 +1,16 @@
 import {useState, useEffect} from 'react';
+import useToastify from './useToastify'
  
 
 const useAxios = () => {
-    const [response, setResponse] = useState(null)
+    const {createToast}=useToastify();
+
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(null)
-
-
+    const [showToast, setShowToast] = useState(false)
+    const [response, setResponse] = useState(null)
+    const [fetchedData, setFetchData] = useState(false)
+    
+    
     const axiosFetch = async (configObj)=>{
         const {
             axiosInstance,
@@ -20,17 +24,26 @@ const useAxios = () => {
             const res = await axiosInstance[method.toLowerCase()](url, {
                 ...requestConfig,
             });
-            console.log(res);
             setResponse(res)
+            setFetchData(true);
+            console.log(res);
         } catch (error) {
-            console.log(error.message);
-            setError(error.message);
+            console.log(error.response.data.message);
+            setShowToast(true)
+            createToast({
+                msg: error.response.data.message,
+                dataType: false
+            })
         }finally{
             setIsLoading(false);
         }
     }
 
-  return {response,isLoading, error, axiosFetch}
+    useEffect(() => {
+       return;
+    }, [response])
+
+  return {response,isLoading, axiosFetch,showToast,fetchedData}
 }
 
 export default useAxios

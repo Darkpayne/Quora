@@ -1,36 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from '../api/register';
 import useAxios from '../Hooks/useAxios';
+import { ToastContainer } from 'react-toastify';
 
 
 
 const Login = () => {
 
-    const {response , isLoading , error, axiosFetch} = useAxios();
+    const {response , isLoading ,  axiosFetch, showToast,fetchedData } = useAxios();
 
     // SIGNUP LOGIC
     const [name, setName] = useState('');
     const [email, setEmail] = useState('')
 
-        
     const NextVerification = async (e) =>{
         e.preventDefault();
-        setShowSignup(false);
-        setShowEmailVerification(true)
-        setShowPassVerification(false)
 
-        axiosFetch({
+        await axiosFetch({
             axiosInstance : axios,
             method: 'POST',
             url : '/api/auth/register',
             requestConfig : {
-                    name,
-                    email
+                name,
+                email
             }
         })
 
+            if (response){
+                setShowSignup(false);
+                setShowEmailVerification(true)
+                setShowPassVerification(false)
+            }
     }
-
 
     const PWD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 
@@ -50,7 +51,7 @@ const Login = () => {
     const errRef = useRef();
     const passRef = useRef();
 
-    const [showError, setShowError] = useState(false)
+    // const [showError, setShowError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('');
 
 
@@ -183,7 +184,7 @@ const Login = () => {
                         </button>
                     </div>
 
-                    <section className={`${showSignup ? 'block' : 'hidden'}`}>
+                    <section className={`${showSignup && !isLoading   ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
                         <form onSubmit={NextVerification}>
                         <div className="mb-6 px-5 mt-5">
@@ -226,7 +227,7 @@ const Login = () => {
                     </section>
 
 
-                    <section className={`${showEmailVerification ? 'block' : 'hidden'}`}>
+                    <section className={`${showEmailVerification && !isLoading ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Confirm your email</h2>
                         <p className='px-5 mt-3 text-sm'>Please enter the code we sent to info@vivian.com</p>
                         <form>
@@ -241,12 +242,15 @@ const Login = () => {
                             <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
                                 <button onClick={ShowlastModal} data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
                             </div>
-                        
                             </form>
                     </section>
 
+                    <section className={`${isLoading ? 'block' : 'hidden'} flex justify-center items-center`}>
+                       <img src="https://media0.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=82a1493b26cxzncu0dda6cfx2j74jkxhq9c2ikqd2vugnog0&rid=200w.gif&ct=g" alt="" />
+                    </section>
 
-                    <section className={`${forgetPassword ? 'block' : 'hidden'}`}>
+
+                    <section className={`${forgetPassword && !isLoading  ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Find Your Account</h2>
                         <p className='px-5 mt-3 text-sm'>Please enter your email to reset your password</p>
                         <form>
@@ -265,7 +269,7 @@ const Login = () => {
                             </form>
                     </section>
 
-                    <section className={`${showPassVerification ? 'block' : 'hidden'}`}>
+                    <section className={`${showPassVerification && !isLoading  ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
                         <form>
                         <div className="mb-8  mt-5">
@@ -326,6 +330,18 @@ const Login = () => {
                 </div>
             </div>
         </div>
+        {showToast && 
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          />}
     </div>
 
   )

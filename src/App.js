@@ -12,8 +12,12 @@ import Profile from "./Pages/Profile";
 import Questions from "./Pages/Questions";
 import Spaces from "./Pages/Spaces.js";
 import Test from "./Pages/Test";
+import { useContext } from "react";
+import AuthContext from "./ContextApi/AuthContext";
 
 function App() {
+
+  const {user} = useContext(AuthContext)
 
   const [isMobile, setIsMobile] = useState(false)
 
@@ -21,7 +25,7 @@ function App() {
   //   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? setIsMobile(true):setIsMobile(false), 
   // [])
 
-  return <>{isMobile ? <Mobile/>:<Desktop/>}</>
+  return <>{isMobile ? <Mobile user={user}/>:<Desktop user={user}/>}</>
 }
 
 export default App;
@@ -43,19 +47,19 @@ const Mobile = () =>{
   )
 }
 
-const Desktop = () => {
+const Desktop = ({user}) => {
 
   return(
     <BrowserRouter>
         <Routes>
-          <Route path="/" element={ <HomePage />} />
-          <Route path="/login" element={ <Login />} />
-          <Route path="/profile" element={ <Profile />} />
-          <Route path="/test" element={ <Test />} />
-          <Route path="/following" element={ <Following />} />
-          <Route path="/questions" element={ <Questions />} />
-          <Route path="/spaces" element={ <Spaces />} />
-          <Route path="/notifications" element={ <Notification />} />
+          <Route path="/" element={user ? <HomePage /> : <Login />} />
+          <Route path="/login" element={user ? <HomePage /> :<Login />} />
+          <Route path="/profile" element={user ?  <Profile /> : <Login />} />
+          <Route path="/test" element={user ? <Test />: <Login />} />
+          <Route path="/following" element={user ?  <Following /> : <Login />} />
+          <Route path="/questions" element={user ? <Questions /> : <Login />} />
+          <Route path="/spaces" element={user ? <Spaces /> : <Login />} />
+          <Route path="/notifications" element={user ? <Notification /> : <Login />} />
         </Routes>
       </BrowserRouter>
     

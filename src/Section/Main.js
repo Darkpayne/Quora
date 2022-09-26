@@ -104,7 +104,7 @@ const Main = () => {
                       <span className='flex mr-2'><ion-icon name="people-outline"></ion-icon></span>
                       <span>Public </span>
                       <span>
-                      <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                      <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                       </span>
                       </button>
 
@@ -127,7 +127,7 @@ const Main = () => {
                     </div>
                 </div>
               </div>
-              <textarea id="message" rows="1" className="block p-2.5 w-full text-sm text-gray-900 border-b rounded-lg border-gray-300" placeholder={`Start your question with "What", "How", "Why", etc.`}></textarea>
+              <textarea id="message" rows="1" className="block  outline-none p-2.5 w-full text-sm text-gray-900 border-b rounded-lg border-gray-300 resize-none" placeholder={`Start your question with "What", "How", "Why", etc.`}></textarea>
            </div>
            {/* Search Component */}
 <div className="h-36"></div>
@@ -155,7 +155,7 @@ const Main = () => {
                         <span className='flex mr-2'><ion-icon name="globe-outline"></ion-icon></span>
                         <span className=''>Everyone </span>
                         <span>
-                        <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                         </span>
                         </button>
 
@@ -178,7 +178,7 @@ const Main = () => {
                       </div>
                   </div>
                 </div>
-                <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900 rounded-lg placeholder:text-base focus:!ring-red-600 active:border-red-600 focus:border" placeholder={`Say something....`}></textarea>
+                <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea>
             </div>
             {/* Search Component */}
 

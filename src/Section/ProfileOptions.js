@@ -73,6 +73,8 @@ const ProfileOptions = () => {
         </section>
 
 
+{/* overflow-scroll to scroll the modals */}
+
         {/* MODAL EMPLYMENT*/}
 <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!showModal ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
     <div className={`relative p-4 w-full max-w-2xl h-full md:h-auto transition-all ease-in-out ${!showModal?'opacity-0 ':'opacity-100 '}`}>
@@ -105,15 +107,15 @@ const ProfileOptions = () => {
                 <form>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">Position</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Position</label>
                                 <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Accountant' autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 ">
-                                <label for="company" className="block mb-2 font-medium  text-gray-900 ">Company/Organization</label>
+                                <label htmlFor="company" className="block mb-2 font-medium  text-gray-900 ">Company/Organization</label>
                                 <input type="text" id="company" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Type to search" autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 mt-5">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
                                 <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                     <option selected></option>
                                     <option value="US">United States</option>
@@ -124,7 +126,7 @@ const ProfileOptions = () => {
                             </div>
                     
                             <div className="mb-6 px-5 mt-5">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
                                 <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                     <option selected></option>
                                     <option value="US">United States</option>
@@ -136,7 +138,7 @@ const ProfileOptions = () => {
                     
                             <div className="flex items-center mb-4 px-5 mt-5">
                                 <input id="default-checkbox" type="checkbox" value="" className="w-5 h-5 text-blue-600 "/>
-                                <label for="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I currently work here</label>
+                                <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I currently work here</label>
                             </div>
                     </div>
                         {/* Buttons */}
@@ -235,12 +237,12 @@ const ProfileOptions = () => {
                 <form>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">Location (required)</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Location (required)</label>
                                 <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Accountant' autoComplete='off' required/>
                             </div>
                             
                             <div className="mb-6 px-5 mt-5">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
                                 <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                     <option selected></option>
                                     <option value="US">United States</option>
@@ -251,7 +253,7 @@ const ProfileOptions = () => {
                             </div>
                     
                             <div className="mb-6 px-5 mt-5">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
                                 <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                     <option selected></option>
                                     <option value="US">United States</option>
@@ -263,7 +265,7 @@ const ProfileOptions = () => {
                     
                             <div className="flex items-center mb-4 px-5 mt-5">
                                 <input id="default-checkbox" type="checkbox" value="" className="w-5 h-5 text-blue-600 "/>
-                                <label for="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I currently live here</label>
+                                <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I currently live here</label>
                             </div>
                     </div>
                         {/* Buttons */}
@@ -314,23 +316,23 @@ const ProfileOptions = () => {
                 <form>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">School</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">School</label>
                                 <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Select a school' autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 ">
-                                <label for="company" className="block mb-2 font-medium  text-gray-900 ">Primary major</label>
+                                <label htmlFor="company" className="block mb-2 font-medium  text-gray-900 ">Primary major</label>
                                 <input type="text" id="company" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Type to search" autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 ">
-                                <label for="company" className="block mb-2 font-medium  text-gray-900 ">Secondary major</label>
+                                <label htmlFor="company" className="block mb-2 font-medium  text-gray-900 ">Secondary major</label>
                                 <input type="text" id="company" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Type to search" autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 ">
-                                <label for="company" className="block mb-2 font-medium  text-gray-900 ">Degree type</label>
+                                <label htmlFor="company" className="block mb-2 font-medium  text-gray-900 ">Degree type</label>
                                 <input type="text" id="company" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="M.F.A." autoComplete='off' required/>
                             </div>
                             <div className="mb-6 px-5 mt-5">
-                                <label for="name" className="block mb-2 font-medium  text-gray-900 ">Graduation Year</label>
+                                <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Graduation Year</label>
                                 <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                     <option selected></option>
                                     <option value="US">United States</option>

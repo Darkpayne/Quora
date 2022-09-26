@@ -39,9 +39,6 @@ const useAxios = () => {
         }
     }
 
-    useEffect(() => {
-       return;
-    }, [response])
 
   return {response,isLoading, axiosFetch,showToast,fetchedData}
 }

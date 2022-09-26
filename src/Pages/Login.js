@@ -1,40 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from '../api/register';
-import useAxios from '../Hooks/useAxios';
+import axios from 'axios';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router';
 import { ToastContainer } from 'react-toastify';
+import AuthContext from '../ContextApi/AuthContext';
+import useToastify from '../Hooks/useToastify'
 
 
 
 const Login = () => {
+    // calling the dispatch function from the auth context
+    const {dispatch,user, emailOTP} = useContext(AuthContext)
+    // useToast is a custom hook to display notifications
+    const {createToast}=useToastify();
+    // 
+    const navigate = useNavigate();
 
-    const {response , isLoading ,  axiosFetch, showToast,fetchedData } = useAxios();
 
-    // SIGNUP LOGIC
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('')
-
-    const NextVerification = async (e) =>{
-        e.preventDefault();
-
-        await axiosFetch({
-            axiosInstance : axios,
-            method: 'POST',
-            url : '/api/auth/register',
-            requestConfig : {
-                name,
-                email
-            }
-        })
-
-            if (response){
-                setShowSignup(false);
-                setShowEmailVerification(true)
-                setShowPassVerification(false)
-            }
-    }
-
-    const PWD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
-
+    // MODAL SWITCHES
     const [showModal, setShowModal] = useState(false)
     const [showSignup, setShowSignup] = useState(false)
     const [showEmailVerification, setShowEmailVerification] = useState(false)
@@ -42,24 +24,170 @@ const Login = () => {
     const [forgetPassword, setForgetPassword] = useState(false)
 
 
-    const [showPassword, setShowPassword] = useState(false)
+    // SIGNUP LOGIC STARTS HERE **********************************************************
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const [showToast, setShowToast] = useState(false)
 
-    const [password, setPassword] = useState('')
-    const [validPass, setValidPass] = useState(false)
-    const [passFocus, setPassFocus] = useState(false)
-
-    const errRef = useRef();
-    const passRef = useRef();
-
-    // const [showError, setShowError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('');
-
-
-    const ShowlastModal =(e)=>{
+    // OnSubmit function to the first form to be submitted
+    const NextVerification = async (e) =>{
         e.preventDefault();
-        setShowEmailVerification(false);
-        setShowPassVerification(true);
+        setIsLoading(true)
+        try {
+            const res = await axios.post("http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/register", {
+                name,
+                email
+            });
+            // console.log(res.data);
+            setShowSignup(false);
+            setShowEmailVerification(true)
+            setShowPassVerification(false)
+            dispatch({type:"FORM_START", payload:res.data})
+            setShowToast(true)
+            createToast({
+                msg: 'OTP sent!',
+                dataType: true
+            })
+        } catch (error) {
+            console.log(error.response.data.message);
+            setShowToast(true)
+            createToast({
+                msg: error.response.data.message,
+                dataType: false
+            })
+        }finally{
+            setIsLoading(false);
+        }
     }
+
+
+
+    // OTP VERIFICATION STARTS HERE *****************************************************
+    const [OTP, setOTP] = useState('');
+
+    const ShowlastModal = async (e)=>{
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+             await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/verify',{
+                otp:OTP,
+                id:emailOTP?.id
+            });
+            setShowEmailVerification(false);
+            setShowPassVerification(true);
+            setShowToast(true)
+            createToast({
+                msg: 'Great! Input Password!',
+                dataType: true
+            })
+        } catch (error) {
+            console.log(error.response.data.message);
+            setShowToast(true)
+            createToast({
+                msg: error.response.data.message,
+                dataType: false
+            })
+        } finally{
+            setIsLoading(false)
+        }
+    }
+    
+
+
+    // PASSWORD SETTING LOGIC STARTS HERE ************************************************
+
+    // showpassword toggles the input type to show hidden passsword
+    const [showPassword, setShowPassword] = useState(false)
+    // password saves the password input to this state
+    const [password, setPassword] = useState('')
+    // this checks if the password is valid after passing the REGEX TEST.
+    const [validPass, setValidPass] = useState(false)
+    useEffect(() => {
+        const result = PWD_REGEX.test(password)
+        setValidPass(result);
+     }, [password])
+    //  this checks wheather the password field is focused or not
+    const [passFocus, setPassFocus] = useState(false)
+    // this activates the passfocus when the component loads
+    const passRef = useRef();
+    useEffect(() => {
+        passRef.current.focus();
+     }, [])
+    //  this REFRENCE targets the error paragraph
+    const errRef = useRef();
+    // State value that stores the error message
+    const [errorMessage, setErrorMessage] = useState('');
+    useEffect(() => {
+        setErrorMessage('');
+    }, [password, showModal])
+    // Password regex that checks if the conditions stated in the regex has been met.
+    const PWD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
+    useEffect(() => {
+        const result = PWD_REGEX.test(password)
+        setValidPass(result);
+        }, [password])
+
+
+    const LoginCompleted = async (e) =>{
+        e.preventDefault();
+        setIsLoading(true)
+        try {
+            const res = await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/password',{
+                password : password,
+                id: emailOTP?.id
+            });
+            dispatch({type:"LOGIN_SUCCESS", payload:res.data})
+            window.location.replace("/");
+        navigate('/');
+        } catch (error) {
+            console.log(error.response.data.message);
+            setShowToast(true)
+            createToast({
+                msg: error.response.data.message,
+                dataType: false
+            })
+        }finally{
+            setIsLoading(false);
+        }
+
+    }
+
+    // LOGIN FORM STARTS HERE **********************************************************
+
+    // state values for the login form
+    const [loginEmail, setLoginEmail] = useState('')
+    const [loginPassword, setLoginPassword] = useState('')
+
+    const handleLogin = async (e) =>{
+        e.preventDefault();
+
+        if (loginEmail === '' || loginPassword === ''){
+            setShowToast(true)
+            createToast({
+                msg: 'please input credentials',
+                dataType: false
+            })
+        }else{
+            try {
+                const res = await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/login',{
+                    email:loginEmail,
+                    password: loginPassword
+                });
+                console.log(res);
+                dispatch({type:"LOGIN_SUCCESS", payload:res.data})
+                window.location.replace("/");
+            } catch (error) {
+                console.log(error.response.data.message);
+                setShowToast(true)
+                createToast({
+                msg: error.response.data.message,
+                dataType: false
+            })
+            }
+        }
+    }
+    
     const ForgetPassword =(e)=>{
         e.preventDefault();
         setShowModal(!showModal) 
@@ -68,20 +196,6 @@ const Login = () => {
         setShowSignup(false)
         setForgetPassword(true)
     }
-
-
-    useEffect(() => {
-       passRef.current.focus();
-    }, [])
-
-    useEffect(() => {
-       const result = PWD_REGEX.test(password)
-       setValidPass(result);
-    }, [password])
-
-    useEffect(() => {
-        setErrorMessage('');
-    }, [password, showModal])
 
   return (
     <div className="h-screen w-screen flex justify-center items-center" style={{backgroundImage:"url('./assets/bg-image.png')"}}>
@@ -124,21 +238,33 @@ const Login = () => {
 
             <div className="basis-1/2 px-5 border-l mb-5" >
                 <h2 className='font-bold text-gray-500 border-b pb-2 mb-3'>Login</h2>
-                    <form >
+                    <form onSubmit={handleLogin}>
                         <div className="mb-6">
-                            <label for="email1" className="block mb-2 text-sm text-gray-600 font-bold">Email</label>
-                            <input type="email"  id="email1" placeholder="you@company.com" className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none " />
+                            <label htmlFor="email1" className="block mb-2 text-sm text-gray-600 font-bold">Email</label>
+                            <input 
+                            type="email"  
+                            id="email1" 
+                            value={loginEmail}
+                            onChange={(e)=>setLoginEmail(e.target.value)}
+                            placeholder="you@company.com" 
+                            className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none" />
                         </div>
+
                         <div className="mb-6">
                             <div className="flex justify-between mb-2">
-                                <label for="password" className="text-sm text-gray-600 font-bold">Password</label>
-                                
+                                <label htmlFor="password" className="text-sm text-gray-600 font-bold">Password</label>
                             </div>
-                            <input type="password"  id="password1" placeholder="Your Password" className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none" />
+                            <input 
+                            type="password"  
+                            id="password1" 
+                            value={loginPassword}
+                            onChange={(e)=>setLoginPassword(e.target.value)}
+                            placeholder="Your Password" 
+                            className="w-full outline-none px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none" />
                         </div>
                         <div className="mb-6 flex justify-between items-center">
                         <span onClick={ForgetPassword} className="text-sm text-gray-400 focus:outline-none focus:text-indigo-500 hover:text-indigo-500 cursor-pointer dark:hover:text-indigo-300">Forgot password?</span>
-                            <button type="button" className=" px-5 py-1 text-white bg-indigo-500 rounded-full focus:bg-indigo-600 focus:outline-none cursor-not-allowed">Login</button>
+                            <button type="submit" className=" px-5 py-1 text-white bg-indigo-500 rounded-full focus:bg-indigo-600 focus:outline-none">Login</button>
                         </div>
                     </form>
             </div>
@@ -188,25 +314,25 @@ const Login = () => {
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
                         <form onSubmit={NextVerification}>
                         <div className="mb-6 px-5 mt-5">
-                            <label for="1name" className="block mb-2 font-medium  text-gray-900 ">Your Name</label>
+                            <label htmlFor="1name" className="block mb-2 font-medium  text-gray-900 ">Your Name</label>
                             <input 
                             type="text" 
                             value={name}
                             onChange={(e)=>setName(e.target.value)}
                             id="1name" 
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                            className="bg-gray-50 border outline-none border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 " 
                             placeholder='What would you like to be called?' 
                             autoComplete='off' 
                             required/>
                         </div>
                         <div className="mb-6 px-5 ">
-                            <label for="1email" className="block mb-2 font-medium  text-gray-900 ">Your email</label>
+                            <label htmlFor="1email" className="block mb-2 font-medium  text-gray-900 ">Your email</label>
                             <input 
                             type="email" 
                             value={email}
                             onChange={(e)=>setEmail(e.target.value)}
                             id="1email" 
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " 
+                            className="bg-gray-50 outline-none border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 " 
                             placeholder="Your email" 
                             autoComplete='off' 
                             required/>
@@ -229,18 +355,25 @@ const Login = () => {
 
                     <section className={`${showEmailVerification && !isLoading ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Confirm your email</h2>
-                        <p className='px-5 mt-3 text-sm'>Please enter the code we sent to info@vivian.com</p>
-                        <form>
+                        <p className='px-5 mt-3 text-sm'>Please enter the code we sent to {emailOTP?.email}</p>
+
+                        <form onSubmit={ShowlastModal}>
                         <div className="mb-6 px-5 mt-5">
-                            <label for="name" className="block mb-2 font-medium  text-gray-900 "></label>
-                            <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='What would you like to be called?' autoComplete='off' required/>
+                            <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 "></label>
+                            <input 
+                            type="text"
+                            value={OTP}
+                            onChange={(e)=>setOTP(e.target.value)}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none  block w-full p-2.5 " 
+                            placeholder='What would you like to be called?' autoComplete='off' 
+                            required/>
 
                         </div>    
                         <p className='text-xs px-5 mb-10 text-gray-500 hover:underline cursor-pointer'>Didn't recieve an email or something went wrong? Resend Code</p>
                     {/* Buttons */}
                    
                             <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
-                                <button onClick={ShowlastModal} data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
+                                <button data-modal-toggle="defaultModal" type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>
                             </div>
                             </form>
                     </section>
@@ -255,8 +388,8 @@ const Login = () => {
                         <p className='px-5 mt-3 text-sm'>Please enter your email to reset your password</p>
                         <form>
                         <div className="mb-6 px-5 mt-5">
-                            <label for="email" className="block mb-2 font-medium  text-gray-900 "></label>
-                            <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Your email' autoComplete='off' required/>
+                            <label htmlFor="email" className="block mb-2 font-medium  text-gray-900 "></label>
+                            <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " placeholder='Your email' autoComplete='off' required/>
 
                         </div>    
                         <div className="h-32"></div>
@@ -271,9 +404,9 @@ const Login = () => {
 
                     <section className={`${showPassVerification && !isLoading  ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Sign Up</h2>
-                        <form>
+                        <form onSubmit={LoginCompleted}>
                         <div className="mb-8  mt-5">
-                            <label for="password" className=" mb-2 font-medium  text-gray-900 flex justify-between px-5"> 
+                            <label htmlFor="password" className=" mb-2 font-medium  text-gray-900 flex justify-between px-5"> 
                                 <span className='flex'>
                                     <span className='first-letter:'>
                                         Password 
@@ -299,7 +432,7 @@ const Login = () => {
                             onFocus={()=>setPassFocus(true)}
                             onChange={(e)=>setPassword(e.target.value)}
                             value={password}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autoComplete='off' required/>
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5" autoComplete='off' required/>
                             </div>
                         {/* display error message */}
                         <p ref={errRef} className={`mt-2 text-sm font-semibold text text-red-600 px-5 mb-10  ${passFocus && !validPass ? 'flex':'hidden'} flex items-start`}>
@@ -319,13 +452,14 @@ const Login = () => {
                     {/* Buttons */}
                    
                             <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
-                                <button data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Finish</button>
+                                <button 
+                                data-modal-toggle="defaultModal" 
+                                type="submit" 
+                                className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Finish</button>
                             </div>
                         
                             </form>
                     </section>
-
-
 
                 </div>
             </div>

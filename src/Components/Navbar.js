@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import AuthContext from '../ContextApi/AuthContext';
 
 
 
 const Navbar = ({navigation}) => {
+  const {dispatch, user} = useContext(AuthContext);
 
   const [searchFocus, setSearchFocus] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -56,10 +58,10 @@ const Navbar = ({navigation}) => {
 
           
           <form className="flex">   
-                <label for="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only ">Search</label>
+                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only ">Search</label>
                 <div className="relative">
                     <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                     <input 
                     type="search" 
@@ -90,7 +92,7 @@ const Navbar = ({navigation}) => {
                           <div className="">
                             <img src="https://www.xtrafondos.com/thumbs/1_6841.jpg" alt="" className='h-10 rounded-full w-10' />
                             <div className="flex justify-between items-center">
-                              <h1 className='text-xl font-bold mt-2'>Joshua Clifford</h1>
+                              <h1 className='text-xl font-bold mt-2 capitalize'>{user?.user?.name}</h1>
                               <span className='text-xl font-bold flex items-center mt-2'>
                               <ion-icon name="chevron-forward-outline"></ion-icon>
                               </span>
@@ -178,7 +180,7 @@ const Navbar = ({navigation}) => {
                           <li className='dropdownSmall'>
                               Help
                           </li>
-                          <li className='dropdownSmall'>
+                          <li onClick={()=>dispatch({type:'LOGOUT'})} className='dropdownSmall'>
                               Logout
                           </li>
                         </ul>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
 
+
 const Main = () => {
 
 
@@ -180,9 +181,7 @@ const Main = () => {
                 </div>
                 <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea>
             </div>
-            {/* Search Component */}
 
-            {/* Buttons */}
             <div className="flex justify-between items-center rounded-b border-t py-2 px-4">
               <div className="flex space-x-2 ">
 
@@ -192,6 +191,7 @@ const Main = () => {
                   <button data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Post</button>
               </div>
           </section>
+          
 
 
         </div>

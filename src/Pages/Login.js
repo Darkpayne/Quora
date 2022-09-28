@@ -35,7 +35,7 @@ const Login = () => {
         e.preventDefault();
         setIsLoading(true)
         try {
-            const res = await axios.post("http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/register", {
+            const res = await axios.post("http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/auth/register", {
                 name,
                 email
             });
@@ -70,7 +70,7 @@ const Login = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-             await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/verify',{
+             await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/auth/verify',{
                 otp:OTP,
                 id:emailOTP?.id
             });
@@ -133,7 +133,7 @@ const Login = () => {
         e.preventDefault();
         setIsLoading(true)
         try {
-            const res = await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/password',{
+            const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/auth/password',{
                 password : password,
                 id: emailOTP?.id
             });
@@ -170,7 +170,7 @@ const Login = () => {
             })
         }else{
             try {
-                const res = await axios.post('http://10.0.0.229/Interns/JonLee/Laravel-Apii/public/api/auth/login',{
+                const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/auth/login',{
                     email:loginEmail,
                     password: loginPassword
                 });

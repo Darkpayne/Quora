@@ -42,7 +42,7 @@ const MainProfile = () => {
                 </div>
                 <div className="grow">
                     <div className="flex group justify-between items-center">
-                        <h1 className='text-3xl font-bold  cursor-pointer'>{user?.user.name}
+                        <h1 className='text-3xl font-bold  cursor-pointer'>{user?.user?.name}
                         <span 
                         onClick={handleNameEdit} 
                         className='text-xs font-thin group-hover:inline hidden cursor-pointer hover:underline'>
@@ -80,7 +80,7 @@ const MainProfile = () => {
                             <div className="">
                                 
                             <textarea 
-                            id="message" rows="7" class="block p-2.5 w-full text-sm text-gray-900 border-none outline-none resize-none" placeholder="Your message..."></textarea>
+                            id="message" rows="7" className="block p-2.5 w-full text-sm text-gray-900 border-none outline-none resize-none" placeholder="Your message..."></textarea>
                             </div>
                             
                             {/* Buttons */}

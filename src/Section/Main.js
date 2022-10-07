@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
 
 
-const Main = () => {
+const Main = ({response}) => {
 
 
   const [showModal, setShowModal] = useState(false)
@@ -37,7 +37,7 @@ const Main = () => {
         <div className="flex items-center gap-x-2 px-3 ">
 
           <div>
-            <img src="https://www.xtrafondos.com/thumbs/1_3396.jpg" alt="" className=' h-10 w-10 rounded-full'/>
+            <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className=' h-10 w-10 rounded-full'/>
           </div>
 
             <button onClick={()=>setShowModal(!showModal)} className='grow bg-gray-100 text-start py-1 px-3 rounded-full border text-gray-400 border-gray-300'>What do you want to ask or share?</button>

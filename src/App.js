@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
+  Navigate,
   Route,
   Routes,  
 } from "react-router-dom";
@@ -52,14 +53,14 @@ const Desktop = ({user}) => {
   return(
     <BrowserRouter>
         <Routes>
-          <Route path="/" element={user ? <HomePage /> : <Login />} />
+          <Route path="/" element={user ? <HomePage /> : <Navigate to="/login"  />} />
           <Route path="/login" element={user ? <HomePage /> :<Login />} />
-          <Route path="/profile" element={user ?  <Profile /> : <Login />} />
-          <Route path="/test" element={user ? <Test />: <Login />} />
-          <Route path="/following" element={user ?  <Following /> : <Login />} />
-          <Route path="/questions" element={user ? <Questions /> : <Login />} />
-          <Route path="/spaces" element={user ? <Spaces /> : <Login />} />
-          <Route path="/notifications" element={user ? <Notification /> : <Login />} />
+          <Route path="/profile" element={user ?  <Profile /> : <Navigate to="/login"  />} />
+          <Route path="/test" element={user ? <Test />: <Navigate to="/login"  />} />
+          <Route path="/following" element={user ?  <Following /> : <Navigate to="/login"  />} />
+          <Route path="/questions" element={user ? <Questions /> : <Navigate to="/login"  />} />
+          <Route path="/spaces" element={user ? <Spaces /> : <Navigate to="/login"  />} />
+          <Route path="/notifications" element={user ? <Notification /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     

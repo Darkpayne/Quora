@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import AuthContext from '../ContextApi/AuthContext';
+import useAxiosGet from '../Hooks/useAxiosGet';
 
 
 
 const Navbar = ({navigation}) => {
-  const {dispatch, user} = useContext(AuthContext);
+  const {dispatch} = useContext(AuthContext);
+  const {response} = useAxiosGet('/api/auth/get-user');
 
   const [searchFocus, setSearchFocus] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -81,7 +83,7 @@ const Navbar = ({navigation}) => {
             <span onClick={()=>setDropdown(!dropdown)} className={` ${searchFocus ? 'hidden' : 'flex'} text-2xl text-gray-500 text-center w-[35px] `}>
               <div className="relative ">
                 <span className='cursor-pointer rounded-full '>
-                  <ion-icon name="person-outline"></ion-icon>
+                  <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='rounded-full'/>
                 </span>
                     {/* dropdown */}
                 <div onMouseEnter={()=>setDropdown(false)} onMouseLeave={()=>setDropdown(true)} className={`${dropdown?'hidden': 'absolute top-9 -right-[100px] -left-[100px] shadow-2xl'} `}>
@@ -90,9 +92,12 @@ const Navbar = ({navigation}) => {
                         <div className="py-3 px-4 text-sm text-gray-900 ">
                           <Link to='/profile' onClick={()=>setDropdown(false)} className='cursor-pointer'>
                           <div className="">
-                            <img src="https://www.xtrafondos.com/thumbs/1_6841.jpg" alt="" className='h-10 rounded-full w-10' />
+                            <img 
+                            src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'}
+                            alt="" 
+                            className='h-10 rounded-full w-10' />
                             <div className="flex justify-between items-center">
-                              <h1 className='text-xl font-bold mt-2 capitalize'>{user?.user?.name}</h1>
+                              <h1 className='text-xl font-bold mt-2 capitalize'>{response?.name}</h1>
                               <span className='text-xl font-bold flex items-center mt-2'>
                               <ion-icon name="chevron-forward-outline"></ion-icon>
                               </span>

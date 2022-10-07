@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import Error from '../Components/Error'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-const ProfileOptions = () => {
+const ProfileOptions = ({isLoading}) => {
 
     const [showModal, setShowModal] = useState(false);
     const [showEducational, setShowEducational] = useState(false);
@@ -10,12 +12,15 @@ const ProfileOptions = () => {
 
   return (
     <>
+                
         <section className=''>
+        {isLoading ?  <Skeleton count={4}/> :
             <div className="credentials">
                 <div className="flex justify-between items-center  border-b py-2 ">
                     <h1 className=' font-bold text-gray-500'>Credentials & Highlights</h1>
                     <span className='bg-gray-100 text-xl px-1 text-gray-700 border-gray-400 border rounded-full'><ion-icon name="color-wand-outline"></ion-icon></span>
                 </div>
+             
                 <div className="mt-3">
                     <div className="flex items-center mb-2">
                         <span className='mr-3 flex text-lg'><ion-icon name="briefcase-outline"></ion-icon></span>
@@ -43,15 +48,18 @@ const ProfileOptions = () => {
 
                 </div>
             </div>
-
+        }
             <section className='mt-8'>
+         {isLoading ?  <Skeleton count={4}/> :
             <div className="flex justify-between items-center  border-b py-2 ">
                     <h1 className=' font-bold text-gray-500'>Knows about</h1>
                     <span className='bg-gray-100 text-xl px-1 text-gray-700 border-gray-400 border rounded-full'><ion-icon name="color-wand-outline"></ion-icon></span>
                 </div>
+        }
             </section>
-            <section>
-            <div className="mt-10">
+            <section className="mt-10">
+         {isLoading ?  <Skeleton count={4}/> :
+            <div >
             <div className="group mb-3 h-72 w-[100%]">
                 <div className="items-center justify-center flex ">
                     <img src="https://qsf.fs.quoracdn.net/-4-ans_frontend_assets.images.empty_states.dormant_lightmode.png-26-c4532c98034818a0.png" alt="" className={`h-16 mt-5`} />
@@ -67,10 +75,11 @@ const ProfileOptions = () => {
                 </button>
                 </div>
             </div>
-         </div>
-                
+            </div>
+            }   
             </section>
         </section>
+
 
 
 {/* overflow-scroll to scroll the modals */}

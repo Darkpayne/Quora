@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
-
+import { Editor, EditorState } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; 
 
 const Main = ({response}) => {
 
@@ -179,7 +180,18 @@ const Main = ({response}) => {
                       </div>
                   </div>
                 </div>
+
                 <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea>
+
+
+                {/* <Editor
+                  editorState={EditorState}
+                  toolbarClassName="toolbarClassName"
+                  wrapperClassName="wrapperClassName"
+                  editorClassName="editorClassName"
+                  onEditorStateChange={this.onEditorStateChange}
+                /> */}
+
             </div>
 
             <div className="flex justify-between items-center rounded-b border-t py-2 px-4">

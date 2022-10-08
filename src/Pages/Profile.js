@@ -14,7 +14,7 @@ const Profile = () => {
             
             <article className='basis-7/12'><MainProfile isLoading={isLoading} response={response}/></article>
             <article className='basis-1/12'></article>
-            <article className='basis-4/12'><ProfileOptions  isLoading={isLoading}/></article>
+            <article className='basis-4/12'><ProfileOptions  isLoading={isLoading} response={response}/></article>
             
           </section>
         </body>

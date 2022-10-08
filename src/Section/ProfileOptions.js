@@ -1,15 +1,83 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Error from '../Components/Error'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import axios from 'axios'
+import AuthContext from '../ContextApi/AuthContext'
+import useToastify from '../Hooks/useToastify'
+import { ToastContainer } from 'react-toastify';
 
-const ProfileOptions = ({isLoading}) => {
+const ProfileOptions = ({isLoading, response}) => {
+    const {user} = useContext(AuthContext);
+    console.log(response);
+
+
+    const [showToast, setShowToast] = useState(false)
+    const {createToast}=useToastify();
 
     const [showModal, setShowModal] = useState(false);
     const [showEducational, setShowEducational] = useState(false);
     const [showLocation, setShowLocation] = useState(false);
     const [addTopics, setAddTopics] = useState(false);
 
+    const date =new Date(response?.created_at);
+
+    // checkbox to see if he still works there
+    const [stillWorkingThere, setStillWorkingThere] = useState(false);
+
+    // This logic is to get the years option to the Select Input fields
+    let maxOffset = 50;
+    let thisYear = (new Date()).getFullYear();
+    let allYears = [];
+    for(let x = 0; x <= maxOffset; x++) {
+        allYears.push(thisYear - x)
+    }
+
+    // the Submit to the Update Employment Credentials 
+    const [position, setPosition] = useState('')
+    const [company, setCompany] = useState('')
+    const [startYear, setStartYear] = useState(0)
+    const [endYear, setEndYear] = useState(0)
+
+    const handleEmploymentUpdate = async (e) =>{
+        e.preventDefault();
+       
+            try {
+                const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/credential/employment', {
+                    position,
+                    company,
+                    start_year: startYear,
+                    end_year: stillWorkingThere ? 2023 : endYear
+                },{
+                    headers: {
+                    'Authorization': `Bearer ${user?.token}`,
+
+                },
+                })
+                setShowModal(false);
+                setShowToast(true)
+                createToast({
+                    msg: res.data.message,
+                    dataType: true
+                })
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+
+                console.log(res);
+            } catch (error) {
+                setShowToast(true)
+                createToast({
+                    msg: error?.response?.data.message,
+                    dataType: false
+                })
+                console.log(error);
+            }
+        
+    }
+
+    console.log(startYear)
   return (
     <>
                 
@@ -43,7 +111,7 @@ const ProfileOptions = ({isLoading}) => {
 
                     <div className="flex items-center mb-2">
                         <span className='mr-3 flex text-lg'><ion-icon name="calendar-clear-outline"></ion-icon></span>
-                        <span className=''>Joined September 2022</span>
+                        <span className=''>{date.toDateString()}</span>
                     </div>
 
                 </div>
@@ -113,41 +181,69 @@ const ProfileOptions = ({isLoading}) => {
                 </div>
                 {/* form  */}
                 
-                <form>
+                <form onSubmit={handleEmploymentUpdate}>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Position</label>
-                                <input type="text" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder='Accountant' autoComplete='off' required/>
+                                <input 
+                                type="text" 
+                                id="name" 
+                                value={position}
+                                onChange={e=>setPosition(e.target.value)}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
+                                placeholder='Accountant' 
+                                autoComplete='off' 
+                                required/>
                             </div>
                             <div className="mb-6 px-5 ">
                                 <label htmlFor="company" className="block mb-2 font-medium  text-gray-900 ">Company/Organization</label>
-                                <input type="text" id="company" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Type to search" autoComplete='off' required/>
+                                <input 
+                                type="text" 
+                                id="company"
+                                value={company}
+                                onChange={e=>setCompany(e.target.value)} 
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
+                                placeholder="Type to search" 
+                                autoComplete='off' 
+                                required/>
                             </div>
                             <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
-                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                                    <option selected></option>
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="FR">France</option>
-                                    <option value="DE">Germany</option>
-                                    </select>
+                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " required   onChange={e=>setStartYear(e.target.value)} >
+                                    {
+                                        allYears.map((x,ind)=>(
+                                            <option key={ind}>{x}</option>
+                                        ))
+                                    }
+                                    
+                                </select>
                             </div>
-                    
-                            <div className="mb-6 px-5 mt-5">
+                    { !stillWorkingThere &&
+                        <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
-                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                                <select 
+                                id="countries" 
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
+                                 onChange={e=>setEndYear(e.target.value)} >
                                     <option selected></option>
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="FR">France</option>
-                                    <option value="DE">Germany</option>
+                                    {
+                                        allYears.map((x,ind)=>(
+                                            <option key={ind}>{x}</option>
+                                        ))
+                                    }
                                     </select>
                             </div>
-                    
+                    }
                             <div className="flex items-center mb-4 px-5 mt-5">
-                                <input id="default-checkbox" type="checkbox" value="" className="w-5 h-5 text-blue-600 "/>
-                                <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I currently work here</label>
+                                <input 
+                                id="default-checkbox" 
+                                type="checkbox" 
+                                onClick={()=>setStillWorkingThere(!stillWorkingThere)} 
+                                className="w-5 h-5 text-blue-600"/>
+                                <label 
+                                htmlFor="default-checkbox" 
+                                className="ml-2 text-sm font-medium text-gray-900"
+                                >I currently work here</label>
                             </div>
                     </div>
                         {/* Buttons */}
@@ -155,7 +251,7 @@ const ProfileOptions = ({isLoading}) => {
                             <button
                              onClick={()=>setShowModal(false)} 
                             type="button" className="  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Cancel</button>
-                            <button type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Save</button>
+                            <button type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Save</button>
                         </div>
                             
                 </form>
@@ -370,6 +466,18 @@ const ProfileOptions = ({isLoading}) => {
         </div>
     </div>
 </div>
+{showToast && 
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          />}
     </>
   )
 }

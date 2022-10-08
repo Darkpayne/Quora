@@ -1,11 +1,46 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
-import { Editor, EditorState } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; 
+
+// Trying different editors
+
+// 11111111111111111
+// import { Editor, EditorState } from "react-draft-wysiwyg";
+// import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; 
+
+// 222222222222
+  // Require Editor JS files.
+  // import 'froala-editor/js/froala_editor.pkgd.min.js';
+  
+  // Require Editor CSS files.
+  // import 'froala-editor/css/froala_style.min.css';
+  // import 'froala-editor/css/froala_editor.pkgd.min.css';
+  
+  // Require Font Awesome.
+  // import 'font-awesome/css/font-awesome.css';
+  
+  // import FroalaEditor from 'react-froala-wysiwyg';
+  
+  // Include special components if required.
+  // import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
+  // import FroalaEditorA from 'react-froala-wysiwyg/FroalaEditorA';
+  // import FroalaEditorButton from 'react-froala-wysiwyg/FroalaEditorButton';
+  // import FroalaEditorImg from 'react-froala-wysiwyg/FroalaEditorImg';
+  // import FroalaEditorInput from 'react-froala-wysiwyg/FroalaEditorInput';
+
+  import { Editor } from '@tinymce/tinymce-react';
+import { useRef } from 'react';
+
 
 const Main = ({response}) => {
 
+  
+  const editorRef = useRef(null);
+  const log = () => {
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+    }
+  };
 
   const [showModal, setShowModal] = useState(false)
   const [askQuestion, setAskQuestion] = useState(true)
@@ -181,9 +216,62 @@ const Main = ({response}) => {
                   </div>
                 </div>
 
-                <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea>
+                {/* <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea> */}
 
-
+                {/* <FroalaEditor tag='textarea'/> */}
+   
+                <Editor
+                  apiKey='6p3s10ba2nu1o64j67x6hvnusqgz28iaidgs39b0t061s2q7'
+                  onInit={(evt, editor) => editorRef.current = editor}
+                  initialValue=""
+                  init={{
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                      'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
+                      'insertdatetime', 'media', 'table', 'code', 'help',
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                      'bold italic forecolor | alignleft aligncenter ' +
+                      'alignright alignjustify | bullist numlist outdent indent | ' +
+                      'removeformat | help | link | image',
+                      automatic_uploads: true,
+                      image_uploadtab: false,
+                      file_picker_types: 'image',
+                      file_picker_callback: (cb, value, meta) => {
+                      const input = document.createElement('input');
+                      input.setAttribute('type', 'file');
+                      input.setAttribute('accept', 'image/*');
+                  
+                      input.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                  
+                        const reader = new FileReader();
+                        reader.addEventListener('load', () => {
+                          /*
+                            Note: Now we need to register the blob in TinyMCEs image blob
+                            registry. In the next release this part hopefully won't be
+                            necessary, as we are looking to handle it internally.
+                          */
+                          const id = 'blobid' + (new Date()).getTime();
+                          const blobCache =  this.activeEditor.editorUpload.blobCache;
+                          const base64 = reader.result.split(',')[1];
+                          const blobInfo = blobCache.create(id, file, base64);
+                          blobCache.add(blobInfo);
+                  
+                          /* call the callback and populate the Title field with the file name */
+                          cb(blobInfo.blobUri(), { title: file.name });
+                        });
+                        reader.readAsDataURL(file);
+                      });
+                  
+                      input.click();
+                    },
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                  }}
+                />
+          
                 {/* <Editor
                   editorState={EditorState}
                   toolbarClassName="toolbarClassName"

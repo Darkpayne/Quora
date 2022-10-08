@@ -27,12 +27,8 @@ const useAxiosGet = (url) => {
                 );
                 setResponse(res.data)
             } catch (error) {
-                if (error.name === 'AbortError'){
-                    console.log('fetch aborted');
-                }else{
                     console.log(error?.message);
                     setError(error);               
-                }
             } finally{
                 setIsLoading(false);
             }

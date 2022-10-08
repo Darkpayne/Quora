@@ -76,9 +76,6 @@ const MainProfile = ({isLoading, response}) => {
 
     const uploadImage = async (e) =>{
         const profilePicture = e.target.files[0]
-        // const formData = new FormData()
-        // formData.append('profilePic', files[0])
-        // console.log(formData);
         try {
             const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/update-profile', {
                 name: response?.name,
@@ -98,11 +95,9 @@ const MainProfile = ({isLoading, response}) => {
                 msg: res.data.message,
                 dataType: true
             })
-
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
-
             console.log(res);
         } catch (error) {
             setShowToast(true)

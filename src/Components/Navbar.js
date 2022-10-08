@@ -8,7 +8,7 @@ import useAxiosGet from '../Hooks/useAxiosGet';
 const Navbar = ({navigation}) => {
   const {dispatch} = useContext(AuthContext);
   const {response} = useAxiosGet('/api/auth/get-user');
-
+  console.log(response);
   const [searchFocus, setSearchFocus] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
@@ -83,7 +83,7 @@ const Navbar = ({navigation}) => {
             <span onClick={()=>setDropdown(!dropdown)} className={` ${searchFocus ? 'hidden' : 'flex'} text-2xl text-gray-500 text-center w-[35px] `}>
               <div className="relative ">
                 <span className='cursor-pointer rounded-full '>
-                  <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='rounded-full'/>
+                  <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='rounded-full h-8 w-8'/>
                 </span>
                     {/* dropdown */}
                 <div onMouseEnter={()=>setDropdown(false)} onMouseLeave={()=>setDropdown(true)} className={`${dropdown?'hidden': 'absolute top-9 -right-[100px] -left-[100px] shadow-2xl'} `}>

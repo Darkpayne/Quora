@@ -7,7 +7,7 @@ import AuthContext from '../ContextApi/AuthContext'
 import useToastify from '../Hooks/useToastify'
 import { ToastContainer } from 'react-toastify';
 
-const ProfileOptions = ({isLoading, response}) => {
+const ProfileOptions = ({isLoading, response, getEmployment}) => {
     const {user} = useContext(AuthContext);
     console.log(response);
 

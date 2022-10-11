@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import SingleComment from './SingleComment'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-const SinglePost = () => {
+const SinglePost = ({isLoading, post}) => {
 
     const [showComment, setShowComment] = useState(false)
 

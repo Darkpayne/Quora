@@ -7,9 +7,10 @@ import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from 'react';
 import axios from 'axios';
 import AuthContext from '../ContextApi/AuthContext';
+import { Skeleton } from '@mantine/core';
 
 
-const Main = ({loggedInUser}) => {
+const Main = ({loggedInUser, getPost,isLoading}) => {
   const {user} = useContext(AuthContext)
   const {createToast}=useToastify();
 
@@ -110,10 +111,30 @@ const Main = ({loggedInUser}) => {
       </main>
 
         {/* EACH POST */}
-        <SinglePost/>
-        <SinglePost/>
-        <SinglePost/>
-        <SinglePost/>
+      {isLoading ?
+      <div className="">
+      <div className="my-5">
+       <Skeleton>
+          <SinglePost/>
+       </Skeleton>
+      </div>
+      
+      <div className="my-5">
+       <Skeleton>
+          <SinglePost/>
+       </Skeleton>
+      </div>
+      </div>
+      :<div className="">
+      {
+        getPost.map((post, index)=>{
+          return (
+            <SinglePost key={index} post={post}/>
+          )
+        })
+        }
+  
+        </div>}
 
 
 {/* MODAL */}

@@ -7,7 +7,11 @@ import Space from '../Section/Space'
 import SpacesToFollow from '../Section/SpacesToFollow'
 
 const HomePage = () => {
-  const { response} = useAxiosGet('/api/auth/get-user');
+  const { response:loggedInUser } = useAxiosGet('/api/auth/get-user');
+  const { response:getPost, error} = useAxiosGet('/api/user/allposts');
+  console.log(getPost);
+  console.log(error);
+
   const navigation = 'home'
   return (
     <>
@@ -15,7 +19,7 @@ const HomePage = () => {
         <body className='bg-gray-100'>
           <section className='flex bodySize bg-gray-100 mx-auto gap-x-5 py-8 px-5'>
             <article className='basis-2/12'><Space/></article>
-            <article className='basis-7/12'><Main response={response}/></article>
+            <article className='basis-7/12'><Main loggedInUser={loggedInUser}/></article>
             <article className='basis-3/12'><SpacesToFollow/></article>
           </section>
         </body>

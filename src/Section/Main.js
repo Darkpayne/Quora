@@ -1,40 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
-
-// Trying different editors
-
-// 11111111111111111
-// import { Editor, EditorState } from "react-draft-wysiwyg";
-// import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; 
-
-// 222222222222
-  // Require Editor JS files.
-  // import 'froala-editor/js/froala_editor.pkgd.min.js';
-  
-  // Require Editor CSS files.
-  // import 'froala-editor/css/froala_style.min.css';
-  // import 'froala-editor/css/froala_editor.pkgd.min.css';
-  
-  // Require Font Awesome.
-  // import 'font-awesome/css/font-awesome.css';
-  
-  // import FroalaEditor from 'react-froala-wysiwyg';
-  
-  // Include special components if required.
-  // import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
-  // import FroalaEditorA from 'react-froala-wysiwyg/FroalaEditorA';
-  // import FroalaEditorButton from 'react-froala-wysiwyg/FroalaEditorButton';
-  // import FroalaEditorImg from 'react-froala-wysiwyg/FroalaEditorImg';
-  // import FroalaEditorInput from 'react-froala-wysiwyg/FroalaEditorInput';
-
-  import { Editor } from '@tinymce/tinymce-react';
+import useToastify from '../Hooks/useToastify'
+import { ToastContainer } from 'react-toastify';
+import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from 'react';
+import axios from 'axios';
+import AuthContext from '../ContextApi/AuthContext';
 
 
-const Main = ({response}) => {
+const Main = ({loggedInUser}) => {
+  const {user} = useContext(AuthContext)
+  const {createToast}=useToastify();
 
-  
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -67,13 +45,50 @@ const Main = ({response}) => {
     setCreatePost(true);
   }
 
+  const [showToast, setShowToast] = useState(false) 
+  const [value, setValue] = useState('');
+
+
+  const handlePost = async (e) =>{
+    console.log('done');
+    e.preventDefault();
+    try {
+        const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/create-post', {
+           title : 'hello',
+           body : JSON.stringify(value)
+        },{
+            headers: {
+            'Authorization': `Bearer ${user?.token}`,
+        },
+        })
+        setShowModal(false);
+        setShowToast(true)
+        createToast({
+            msg: res.data.message,
+            dataType: true
+        })
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+        console.log(res);
+    } catch (error) {
+        setShowToast(true)
+        createToast({
+            msg: error?.response?.data.message,
+            dataType: false
+        })
+        console.log(error);
+    }
+}
+
+
   return (
     <>
       <main className='bg-white pt-2 px-1 border'>
         <div className="flex items-center gap-x-2 px-3 ">
 
           <div>
-            <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className=' h-10 w-10 rounded-full'/>
+            <img src={loggedInUser?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${loggedInUser?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className=' h-10 w-10 rounded-full'/>
           </div>
 
             <button onClick={()=>setShowModal(!showModal)} className='grow bg-gray-100 text-start py-1 px-3 rounded-full border text-gray-400 border-gray-300'>What do you want to ask or share?</button>
@@ -179,11 +194,9 @@ const Main = ({response}) => {
               </div>
           </section>
 
-
           <section className={`${askQuestion && 'hidden'}`}>
-            <div id="createPost" className=" px-4 py-3" >
-
-                <div className="mb-4 flex items-center">
+          
+                <div className="mb-4 flex items-center  px-4 py-3">
                   <img src="https://www.xtrafondos.com/thumbs/1_4058.jpg" alt="" className='h-6 w-6 rounded-full mr-2'/>
                   <div className="flex items-center text-gray-700">
                     <span className='text-sm flex mr-2'><ion-icon name="play"></ion-icon></span>
@@ -192,7 +205,7 @@ const Main = ({response}) => {
                         <span className='flex mr-2'><ion-icon name="globe-outline"></ion-icon></span>
                         <span className=''>Everyone </span>
                         <span>
-                        <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        {/* <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg> */}
                         </span>
                         </button>
 
@@ -219,77 +232,75 @@ const Main = ({response}) => {
                 {/* <textarea id="message" rows="15" className="block p-2.5 w-full text-sm text-gray-900  outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea> */}
 
                 {/* <FroalaEditor tag='textarea'/> */}
-   
-                <Editor
-                  apiKey='6p3s10ba2nu1o64j67x6hvnusqgz28iaidgs39b0t061s2q7'
-                  onInit={(evt, editor) => editorRef.current = editor}
-                  initialValue=""
-                  init={{
-                    height: 500,
-                    menubar: false,
-                    plugins: [
-                      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                      'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
-                      'insertdatetime', 'media', 'table', 'code', 'help',
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                      'bold italic forecolor | alignleft aligncenter ' +
-                      'alignright alignjustify | bullist numlist outdent indent | ' +
-                      'removeformat | help | link | image',
-                      automatic_uploads: true,
-                      image_uploadtab: false,
-                      file_picker_types: 'image',
-                      file_picker_callback: (cb, value, meta) => {
-                      const input = document.createElement('input');
-                      input.setAttribute('type', 'file');
-                      input.setAttribute('accept', 'image/*');
-                  
-                      input.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                  
-                        const reader = new FileReader();
-                        reader.addEventListener('load', () => {
-                          /*
-                            Note: Now we need to register the blob in TinyMCEs image blob
-                            registry. In the next release this part hopefully won't be
-                            necessary, as we are looking to handle it internally.
-                          */
-                          const id = 'blobid' + (new Date()).getTime();
-                          const blobCache =  this.activeEditor.editorUpload.blobCache;
-                          const base64 = reader.result.split(',')[1];
-                          const blobInfo = blobCache.create(id, file, base64);
-                          blobCache.add(blobInfo);
-                  
-                          /* call the callback and populate the Title field with the file name */
-                          cb(blobInfo.blobUri(), { title: file.name });
+                <div id="createPost" className=" px-4" >
+                  <form onSubmit={handlePost} action="">
+                  <Editor
+                    apiKey='6p3s10ba2nu1o64j67x6hvnusqgz28iaidgs39b0t061s2q7'
+                    onInit={(evt, editor) => editorRef.current = editor}
+                    initialValue=""
+                    value={value}
+                    onEditorChange={(newValue, editor) => setValue(newValue)}
+                    
+                    init={{
+                      height: 400,
+                      menubar: false,
+                      plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help','quickbars', 'image', 'editimage'
+                      ],
+                      quickbars_image_toolbar: false,
+                      toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help | link | image |underline ',
+                        automatic_uploads: true,
+                        image_uploadtab: false,
+                        file_picker_types: 'image',
+                        file_picker_callback: (cb, value, meta) => {
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.setAttribute('accept', 'image/*');
+                    
+                        input.addEventListener('change', (e) => {
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.addEventListener('load', () => {
+                            const id = 'blobid' + (new Date()).getTime();
+                            const blobCache =  this.activeEditor.editorUpload.blobCache;
+                            const base64 = reader.result.split(',')[1];
+                            const blobInfo = blobCache.create(id, file, base64);
+                            blobCache.add(blobInfo);
+                            cb(blobInfo.blobUri(), { title: file.name });
+                          });
+                          reader.readAsDataURL(file);
                         });
-                        reader.readAsDataURL(file);
-                      });
-                  
-                      input.click();
-                    },
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                  }}
-                />
-          
-                {/* <Editor
-                  editorState={EditorState}
-                  toolbarClassName="toolbarClassName"
-                  wrapperClassName="wrapperClassName"
-                  editorClassName="editorClassName"
-                  onEditorStateChange={this.onEditorStateChange}
-                /> */}
-
+                    
+                        input.click();
+                      },
+                      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                     
+                    }}
+                  />
+                  {/* <div className="myTextarea" contentEditable>hello</div> */}
+                  {/* <Editor
+                    editorState={EditorState}
+                    toolbarClassName="toolbarClassName"
+                    wrapperClassName="wrapperClassName"
+                    editorClassName="editorClassName"
+                    onEditorStateChange={this.onEditorStateChange}
+                  /> */}
+              <div className="flex justify-between items-center rounded-b py-2 px-4">
+                <div className="flex space-x-2 ">
+                    <button  type="button" className="text-gray-500 bg-white focus:outline-none border border-transparent hover:border-blue-400 hover:border text-sm font-medium px-2 ">
+                      <span className='text-2xl font-bold '><ion-icon name="text-outline"></ion-icon></span>
+                    </button>
+                    <button  type="button" className="text-gray-500 bg-whitefocus:outline-none border border-transparent hover:border-blue-400 hover:border text-sm font-medium px-2 "><span className='text-2xl font-bold '><ion-icon name="images-outline"></ion-icon></span></button>
+                </div>
+                    <button  type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Post</button>
+              </div>
+            </form>
             </div>
-
-            <div className="flex justify-between items-center rounded-b border-t py-2 px-4">
-              <div className="flex space-x-2 ">
-
-                  <button data-modal-toggle="defaultModal" type="button" className="text-gray-500 bg-white focus:outline-none hover:border-blue-400 hover:border text-sm font-medium px-2 "><span className='text-2xl font-bold '><ion-icon name="text-outline"></ion-icon></span></button>
-                  <button data-modal-toggle="defaultModal" type="button" className="text-gray-500 bg-whitefocus:outline-none hover:border-blue-400 hover:border text-sm font-medium px-2 "><span className='text-2xl font-bold '><ion-icon name="images-outline"></ion-icon></span></button>
-              </div>
-                  <button data-modal-toggle="defaultModal" type="button" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Post</button>
-              </div>
           </section>
           
 

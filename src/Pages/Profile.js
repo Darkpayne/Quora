@@ -11,6 +11,9 @@ const Profile = () => {
   console.log(user);
   const {isLoading, response} = useAxiosGet('/api/auth/get-user');
   const getEmployment = useAxiosGet(`api/credential/employment/${user?.user?.id}`);
+  const getEducation = useAxiosGet(`api/credential/education/${user?.user?.id}`);
+  const getLocation = useAxiosGet(`api/credential/location/${user?.user?.id}`);
+
   return (
     <>
         <Navbar/>
@@ -19,7 +22,7 @@ const Profile = () => {
             
             <article className='basis-7/12'><MainProfile isLoading={isLoading} response={response}/></article>
             <article className='basis-1/12'></article>
-            <article className='basis-4/12'><ProfileOptions getEmployment={getEmployment} isLoading={isLoading} response={response}/></article>
+            <article className='basis-4/12'><ProfileOptions getEmployment={getEmployment} isLoading={isLoading} response={response} getEducation={getEducation} getLocation={getLocation}/></article>
             
           </section>
         </body>

@@ -97,7 +97,10 @@ const Navbar = ({navigation}) => {
                             alt="" 
                             className='h-10 rounded-full w-10' />
                             <div className="flex justify-between items-center">
-                              <h1 className='text-xl font-bold mt-2 capitalize'>{response?.name}</h1>
+                              <div className="">
+                                <h1 className='text-xl text-start font-bold mt-2 capitalize'>{response?.name}</h1>
+                                { response?.profile_credential && <h1 className=' text-start '>{response?.profile_credential}</h1>}
+                              </div>
                               <span className='text-xl font-bold flex items-center mt-2'>
                               <ion-icon name="chevron-forward-outline"></ion-icon>
                               </span>

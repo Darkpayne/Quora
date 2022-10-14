@@ -87,15 +87,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
     // checkbox to see if he still works there
     const [stillWorkingThere, setStillWorkingThere] = useState(false);
 
-    // This logic is to get the years option to the Select Input fields
-    let maxOffset = 50;
-    let thisYear = (new Date()).getFullYear();
-    let allYears = [];
-    for(let x = 0; x <= maxOffset; x++) {
-        allYears.push(thisYear - x)
-    }
 
-    // the Submit to the Update Employment Credentials  *******************************************************************************************************
+    // SUBMITING THE FORM OF EMPLOYMENT CREDENTIALS  *******************************************************************************************************
     const [position, setPosition] = useState('')
     const [company, setCompany] = useState('')
     const [startYear, setStartYear] = useState(0)
@@ -159,7 +152,6 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
 
       const handleEducationCredentials = async (e)=>{
         e.preventDefault();
-       
         try {
             const res = await axios.post(`http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/credential/education`, {
                 school: educationCredentials.school,
@@ -194,7 +186,7 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
       }
 
 
-    //   Set LOCATION CREDENTIAL *******************************************************************************************************
+    // SUBMITING THE FORM OF LOCATION CREDENTIAL *******************************************************************************************************
     const [stillLivingThere, setStillLivingThere] = useState(true)
 
     const locationCredentialsForm = {
@@ -246,6 +238,227 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
     
       }
 
+    // UPDATE THE PROFILE CREDENTIAL *******************************************************************************************************
+    const updateProfileCredentialsValue = {
+        name : "",
+        profile_credential:""
+    }
+
+    const [updateProfileCredential, setUpdateProfileCredential] = useState(updateProfileCredentialsValue);
+
+    const updateProfileCredentialsFunction = useCallback(
+        (type) => (event) => {
+            setUpdateProfileCredential({ ...updateProfileCredential, [type]: event.target.value });
+        },
+        [updateProfileCredential]
+      );
+
+      const handleUpdateProfileCredentials = async (e) =>{
+        e.preventDefault();
+        try {
+            const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/update-profile', {
+                name: response?.name,
+                profile_credential:updateProfileCredential.profile_credential
+            },{
+                headers: {
+                'Authorization': `Bearer ${user?.token}`,
+            },
+            })
+            setShowModal(false);
+            setShowToast(true)
+            createToast({
+                msg: res.data.message,
+                dataType: true
+            })
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+
+            console.log(res);
+        } catch (error) {
+            setShowToast(true)
+            createToast({
+                msg: error?.response?.data.message,
+                dataType: false
+            })
+            console.log(error);
+        }
+      }
+
+    // UPDATE WORK/EMPLOYMENT CREDENTIAL *******************************************************************************************************
+    const [updateStillWorking, setUpdateStillWorking] = useState(getEmployment?.response?.data?.end_year == 2023)
+
+   
+    const updateEmploymentCredentialsValue = {
+        position : "",
+        company : "",
+        start_year: 0,
+        end_year: 0
+    }
+
+     const [updateEmployment, setUpdateEmployment] = useState(updateEmploymentCredentialsValue);
+
+     const updateEmploymentFunction = useCallback((type) => (event)=>{
+        setUpdateEmployment({...updateEmployment , [type]: event.target.value })
+     }, [updateEmployment]);
+
+    const handleEmploymentUpdateForm = async (e) =>{
+        e.preventDefault();
+        try {
+            const res = await axios.post(`http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/credential/employment/${user?.user?.id}`, {
+                position : updateEmployment.position || getEmployment?.response?.data?.position,
+                company : updateEmployment.company || getEmployment?.response?.data?.company,
+                start_year: updateEmployment.start_year || getEmployment?.response?.data?.start_year,
+                end_year: updateEmployment.end_year === 0 ?  getEmployment?.response?.data?.end_year : updateEmployment.end_year,
+            },{
+                headers: {
+                'Authorization': `Bearer ${user?.token}`,
+            },
+            })
+            setShowModal(false);
+            setShowToast(true)
+            createToast({
+                msg: res.data.message,
+                dataType: true
+            })
+            console.log(res);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            setShowToast(true)
+            createToast({
+                msg: error?.response?.data.message,
+                dataType: false
+            })
+            console.log(error);
+        }
+    
+    }
+
+        // This logic is to get the years option to the Select Input fields
+        let maxOffset = 50;
+        let thisYear = (new Date()).getFullYear();
+        let allYears = [];
+        for(let x = 0; x <= maxOffset; x++) {
+            allYears.push(thisYear - x)
+        }
+        // This logic is to get the end year option to the Select Input fields
+        let maxremainingOffset = 2022 - Number(updateEmployment.start_year == 0 ? getEmployment?.response?.data?.start_year: updateEmployment.start_year);
+        let thisremainingYear =  Number(updateEmployment.start_year == 0 ? getEmployment?.response?.data?.start_year: updateEmployment.start_year);
+        let remainingYears = [];
+        for(let x = 0; x <= maxremainingOffset; x++) {
+            remainingYears.push(Number(thisremainingYear) + x)
+        }
+
+    // UPDATE EDUCATION CREDENTIAL *******************************************************************************************************
+    const updateEducationCredentialsValue = {
+        school: "",
+        primary_major: "",
+        secondary_major: "",
+        degree_type: "",
+        graduation_year: 0
+    }
+
+     const [updateEducation, setUpdateEducation] = useState(updateEducationCredentialsValue);
+
+     const updateEducationFunction = useCallback((type) => (event)=>{
+        setUpdateEducation({...updateEducation , [type]: event.target.value })
+     }, [updateEducation]);
+
+    const handleEducationUpdateForm = async (e) =>{
+        e.preventDefault();
+            try {
+            const res = await axios.post(`http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/credential/education/${user?.user?.id}`, {
+                school: updateEducation.school|| getEducation?.response?.data?.school,
+                primary_major: updateEducation.primary_major || getEducation?.response?.data?.primary_major,
+                secondary_major: updateEducation.secondary_major || getEducation?.response?.data?.secondary_major,
+                degree_type: updateEducation.degree_type || getEducation?.response?.data?.degree_type,
+                graduation_year: updateEducation.graduation_year === 0 ? getEducation?.response?.data?.graduation_year : updateEducation.graduation_year
+            },{
+                headers: {
+                'Authorization': `Bearer ${user?.token}`,
+            },
+            })
+            setShowModal(false);
+            setShowToast(true)
+            createToast({
+                msg: res.data.message,
+                dataType: true
+            })
+            console.log(res);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            setShowToast(true)
+            createToast({
+                msg: error?.response?.data.message,
+                dataType: false
+            })
+            console.log(error);
+        }
+    }
+
+
+    // UPDATE LOCATION CREDENTIAL *******************************************************************************************************
+    const [updateStillLiving, setUpdateStillLiving] = useState(Number(getLocation?.response?.data?.end_year) == 5000)
+
+    const updateLocationCredentialsValue = {
+        location: "",
+        start_year: 0,
+        end_year: 0
+    }
+
+     const [updateLocation, setUpdateLocation] = useState(updateLocationCredentialsValue);
+
+     const updateLocationFunction = useCallback((type) => (event)=>{
+        setUpdateLocation({...updateLocation , [type]: event.target.value })
+     }, [updateLocation]);
+
+    const handleLocationUpdateForm = async (e) =>{
+        e.preventDefault();
+        try {
+            const res = await axios.post(`http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/credential/location/${user?.user?.id}`, {
+                location: updateLocation.location || getLocation?.response?.data.location,
+                start_year: updateLocation.start_year || getLocation?.response?.data.start_year,
+                end_year: updateLocation.end_year == 0 ? getLocation?.response?.data.end_year : updateLocation.end_year
+            },{
+                headers: {
+                'Authorization': `Bearer ${user?.token}`,
+            },
+            })
+            setShowModal(false);
+            setShowToast(true)
+            createToast({
+                msg: res.data.message,
+                dataType: true
+            })
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            console.log(res);
+        } catch (error) {
+            setShowToast(true)
+            createToast({
+                msg: error?.response?.data.message,
+                dataType: false
+            })
+            console.log(error);
+        }
+    
+        
+    }
+
+    // This logic is to get the end year option to the Select Input fields
+    let maxlivingOffset = 2022 - Number(updateLocation.start_year == 0 ? getLocation?.response?.data?.start_year: updateLocation.start_year);
+    let thislivingYear =  Number(updateLocation.start_year == 0 ? getLocation?.response?.data?.start_year: updateLocation.start_year);
+    let livingYears = [];
+    for(let x = 0; x <= maxlivingOffset; x++) {
+        livingYears.push(Number(thislivingYear) + x)
+    }
+
 
   return (
     <>
@@ -265,8 +478,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                         <span className='mr-3 flex text-lg bg-slate-100 h-8 w-8 items-center justify-center rounded-full'><ion-icon name="briefcase-outline"></ion-icon></span>
                        {getEmployment?.response?.data 
                        ?
-                        <span className='text-gray-700 font-medium'>
-                            {getEmployment?.response?.data?.position} at {getEmployment?.response?.data?.company} <span className='font-light'>{getEmployment?.response?.data?.start_year} - {getEmployment?.response?.data?.end_year === 2023 ? 'present' : getEmployment?.response?.data?.end_year}</span></span>
+                        <span className='text-gray-700 font-semibold text-base'>
+                            {getEmployment?.response?.data?.position} at {getEmployment?.response?.data?.company} <span className='font-light'>{getEmployment?.response?.data?.start_year} - {Number(getEmployment?.response?.data?.end_year) === 2023 ? 'present' : getEmployment?.response?.data?.end_year}</span></span>
                         :
                         <span onClick={()=>setShowModal(true)} className='text-blue-800 hover:underline cursor-pointer'>Add employment credential</span>}
                     </div>
@@ -307,38 +520,89 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
          {isLoading ?  <Skeleton count={4}/> :
             <div className="flex justify-between items-center  border-b py-2 ">
                     <h1 className=' font-bold text-gray-500'>Knows about</h1>
-                    <span className='bg-gray-100 text-xl px-1 text-gray-700 border-gray-400 border rounded-full'><ion-icon name="color-wand-outline"></ion-icon></span>
+                    <span 
+                    className='hover:bg-gray-100 text-lg flex items-center justify-center h-6 w-6 font-thin p-1 text-gray-700 border-gray-400 border rounded-full cursor-pointer '><ion-icon name="pencil-outline"></ion-icon></span>
                 </div>
         }
             </section>
-            <section className="mt-10">
+
+            <section className="mt-5">
          {isLoading ?  <Skeleton count={4}/> :
             <div >
-            <div className="group mb-3 h-72 w-[100%]">
-                <div className="items-center justify-center flex ">
-                    <img src="https://qsf.fs.quoracdn.net/-4-ans_frontend_assets.images.empty_states.dormant_lightmode.png-26-c4532c98034818a0.png" alt="" className={`h-16 mt-5`} />
+                {getEducation?.response?.data?.primary_major || getEducation?.response?.data?.secondary_major || getEmployment?.response?.data?.company 
+                    ?
+                <div className="">
+                    {getEmployment?.response?.data?.company 
+                    &&
+                    <div className="flex items-center mb-1.5">
+                        <span className='mr-3 flex items-center justify-center'>
+                            <img src={`https://www.xtrafondos.com/thumbs/1_${Math.floor(Math.random() * 10)}031.jpg`} alt="" className=' h-6 w-6 rounded' />
+                        </span>
+                        <span className='text-gray-700 font-bold text-sm'>
+                            {getEmployment?.response?.data?.company} 
+                        </span>
+                    </div>
+                    }
+                    {getEducation?.response?.data 
+                    &&
+                    <div className="flex items-center my-4">
+                        <span className='mr-3 flex items-center justify-center'>
+                            <img src={`https://www.xtrafondos.com/thumbs/1_${Math.floor(Math.random() * 10)}071.jpg`} alt="" className=' h-6 w-6 rounded' />
+                        </span>
+                        <span className='text-gray-700 font-bold text-sm'>
+                            {getEducation?.response?.data?.school} 
+                        </span>
+                    </div>
+                        }
+                    {
+                        getEducation?.response?.data?.primary_major 
+                    &&
+                    <div className="flex items-center my-4">
+                        <span className='mr-3 flex items-center justify-center'>
+                            <img src={`https://www.xtrafondos.com/thumbs/1_${Math.floor(Math.random() * 10)}081.jpg`} alt="" className=' h-6 w-6 rounded' />
+                        </span>
+                        <span className='text-gray-700 font-bold text-sm'>
+                            {getEducation?.response?.data?.primary_major} 
+                        </span>
+                    </div>
+                    }
+                    {getEducation?.response?.data?.secondary_major &&
+                    <div className="flex items-center my-4">
+                        <span className='mr-3 flex items-center justify-center'>
+                            <img src={`https://www.xtrafondos.com/thumbs/1_${Math.floor(Math.random() * 10)}011.jpg`} alt="" className=' h-6 w-6 rounded' />
+                        </span>
+                        <span className='text-gray-700 font-bold text-sm'>
+                            {getEducation?.response?.data?.secondary_major} 
+                        </span>
+                    </div>
+                    }
+
                 </div>
-                <div className="text-center">
-                    <h1 className='font-medium my-4'>
-                    You haven't added any topic yet.
-                        </h1>
-                        <button
-                         onClick={()=>setAddTopics(true)}
-                        className="text-blue-500 bg-blue-100 border-blue-300 border rounded-full  px-3">
-                        Add topics
-                </button>
-                </div>
-            </div>
+                    :
+                    <div className="group mb-3 h-72 w-[100%]">
+                        <div className="items-center justify-center flex ">
+                            <img src="https://qsf.fs.quoracdn.net/-4-ans_frontend_assets.images.empty_states.dormant_lightmode.png-26-c4532c98034818a0.png" alt="" className={`h-16 mt-5`} />
+                        </div>
+                        <div className="text-center">
+                            <h1 className='font-medium my-4'>
+                            You haven't added any topic yet.
+                                </h1>
+                                <button
+                                onClick={()=>setAddTopics(true)}
+                                className="text-blue-500 bg-blue-100 border-blue-300 border rounded-full  px-3">
+                                Add topics
+                        </button>
+                        </div>
+                    </div>
+                    }
             </div>
             }   
             </section>
+            
         </section>
-
-
-
 {/* overflow-scroll to scroll the modals */}
 
-        {/* MODAL EMPLYMENT*/}
+        {/* MODAL EMPLOYMENT*/}
 <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!showModal ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
     <div className={`relative p-4 w-full max-w-xl h-full md:h-auto transition-all ease-in-out ${!showModal?'opacity-0 ':'opacity-100 '}`}>
        
@@ -395,10 +659,10 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                             </div>
                             <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
-                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " required   onChange={e=>setStartYear(e.target.value)} >
+                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " required onChange={e=>setStartYear(e.target.value)} value={startYear} >
                                     {
                                         allYears.map((x,ind)=>(
-                                            <option key={ind}>{x}</option>
+                                            <option className='text-xl' key={ind}>{x}</option>
                                         ))
                                     }
                                     
@@ -410,11 +674,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <select 
                                 id="countries" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
-                                 onChange={e=>setEndYear(e.target.value)} >
+                                 onChange={e=>setEndYear(e.target.value)} required>
                                     <option selected></option>
                                     {
                                         allYears.map((x,ind)=>(
-                                            <option key={ind}>{x}</option>
+                                            <option className='text-xl' key={ind}>{x}</option>
                                         ))
                                     }
                                     </select>
@@ -594,7 +858,6 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
     </div>
 </div>
 
-
         {/* MODAL EDUCATIONAL*/}
 <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!showEducational ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
     <div className={`relative p-4 w-full max-w-xl h-full md:h-auto transition-all ease-in-out ${!showEducational?'opacity-0 ':'opacity-100 '}`}>
@@ -711,7 +974,6 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
 
         {/* HOME */}
         <section className={`${generalCredential ? 'block' : 'hidden'}`}>
-
         <div className="flex px-3 space-x-2 items-center rounded-t pt-3">
             <button onClick={()=>setEditCredentials(false)} type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 inline-flex items-center" data-modal-toggle="defaultModal">
                 <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
@@ -749,7 +1011,7 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
             <span className='ml-5 h-7 w-7 flex justify-center items-center bg-slate-200 rounded-full mr-2 text-gray-600'><ion-icon name="briefcase-outline"></ion-icon></span>
             <span className='mr-2  font-medium'>
             {getEmployment?.response?.data?.position} at {getEmployment?.response?.data?.company} .  
-            <span className='text-sm text-gray-500 capitalize font-normal'> {getEmployment?.response?.data?.start_year} - {getEmployment?.response?.data?.end_year === 2023 ? 'present' : getEmployment?.response?.data?.end_year} . </span>
+            <span className='text-sm text-gray-500 capitalize font-normal'> {getEmployment?.response?.data?.start_year} - {Number(getEmployment?.response?.data?.end_year) === 2023 ? 'present' : getEmployment?.response?.data?.end_year} . </span>
             </span>
             <span onClick={secondCredential} className='text-sm text-gray-500 cursor-pointer hover:underline pt-1'>Edit</span>
         </div>
@@ -806,22 +1068,23 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 </div>
                 {/* form  */}
                 
-                <form >
+                <form onSubmit={handleUpdateProfileCredentials}>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
                                 <input 
                                 type="text" 
                                 id="name"
                                 defaultValue={response?.profile_credential} 
-                                // onChange={(e)=>setprofileCredential(e.target.value)}
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " autoComplete='off' required/>
+                                onChange={updateProfileCredentialsFunction("profile_credential")}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " autoComplete='off'
+                                required/>
                             </div>
                     </div>
                     <div className="h-24"></div>
                         {/* Buttons */}
                         <div className=" flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
                             <button
-                                onClick={backHome}
+                            onClick={backHome}
                             type="button" className="  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Cancel</button>
                             <button type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Save</button>
                         </div>
@@ -849,7 +1112,7 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 <div className="flex justify-between items-center ">
                     <div className="my-3 mx-5 flex items-center">
                         <span className='flex justify-center items-center mr-3 h-8 w-8 bg-gray-200 rounded-full'><ion-icon name="person"></ion-icon></span>
-                        <span>Add Profile credential</span>
+                        <span>Edit employment credential</span>
                     </div>
                     <div className="text-xs space-x-3 mx-3">
                         <button className='py-1 bg-gray-200 px-3 rounded-full text-gray-400 font-medium'>Default</button>
@@ -859,15 +1122,15 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 </div>
                 {/* form  */}
                 
-                <form>
+                <form onSubmit={handleEmploymentUpdateForm}>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Position</label>
                                 <input 
                                 type="text" 
                                 id="name" 
-                                value={getEmployment?.response?.data?.position}
-                                // onChange={e=>setPosition(e.target.value)}
+                                defaultValue={getEmployment?.response?.data?.position}
+                                onChange={updateEmploymentFunction("position")}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
                                 placeholder='Accountant' 
                                 autoComplete='off' 
@@ -878,8 +1141,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 type="text" 
                                 id="company"
-                                value={getEmployment?.response?.data?.company}
-                                // onChange={e=>setCompany(e.target.value)} 
+                                defaultValue={getEmployment?.response?.data?.company}
+                                onChange={updateEmploymentFunction("company")} 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
                                 placeholder="Type to search" 
                                 autoComplete='off' 
@@ -887,26 +1150,27 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                             </div>
                             <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Start Year</label>
-                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " required  value={getEmployment?.response?.data?.start_year} onChange={e=>setStartYear(e.target.value)} >
+                                <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " required  defaultValue={getEmployment?.response?.data?.start_year} onChange={updateEmploymentFunction("start_year")} >
+                                <option className='py-2 text-lg'>{getEmployment?.response?.data?.start_year}</option>
                                     {
                                         allYears.map((x,ind)=>(
-                                            <option key={ind}>{x}</option>
+                                            <option className='py-2 text-lg'  key={ind}>{x}</option>
                                         ))
                                     }
                                     
                                 </select>
                             </div>
-                    { getEmployment?.response?.data?.end_year === 2023 ||
+                    { updateStillWorking &&
                         <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
                                 <select 
                                 id="countries" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
-                                 onChange={e=>setEndYear(e.target.value)} >
+                                onChange={updateEmploymentFunction("end_year")}  defaultValue={getEmployment?.response?.data?.end_year || 0} >
                                     <option selected></option>
                                     {
-                                        allYears.map((x,ind)=>(
-                                            <option key={ind}>{x}</option>
+                                        remainingYears.map((x,ind)=>(
+                                            <option className='py-2 text-lg'  key={ind}>{x}</option>
                                         ))
                                     }
                                     </select>
@@ -916,9 +1180,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 id="default-checkbox" 
                                 type="checkbox" 
-                                // onClick={()=>setStillWorkingThere(!stillWorkingThere)} 
-                                // defaultChecked={getEmployment?.response?.data?.end_year === 2023}
-                                checked={getEmployment?.response?.data?.end_year === 2023}
+                                onClick={()=>setUpdateStillWorking(!updateStillWorking)} 
+                                defaultChecked={!updateStillWorking}
                                 className="w-5 h-5 text-blue-600"/>
                                 <label 
                                 htmlFor="default-checkbox" 
@@ -966,15 +1229,15 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 </div>
                 </div>
                 {/* form  */}
-                <form onSubmit={handleEducationCredentials}>
+                <form onSubmit={handleEducationUpdateForm}>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">School</label>
                                 <input 
                                 type="text" 
                                 id="name" 
-                                value={getEducation?.response?.data?.school}
-                                // onChange={updateEducationCredentials("school")}
+                                defaultValue={getEducation?.response?.data?.school}
+                                onChange={updateEducationFunction("school")}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
                                 placeholder='Select a school' autoComplete='off' 
                                 required/>
@@ -984,8 +1247,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 type="text" 
                                 id="primary_major" 
-                                value={getEducation?.response?.data?.primary_major}
-                                onChange={updateEducationCredentials("primary_major")}
+                                defaultValue={getEducation?.response?.data?.primary_major}
+                                onChange={updateEducationFunction("primary_major")}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
                                 placeholder="Type to search" autoComplete='off'
                                 required/>
@@ -995,8 +1258,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 type="text" 
                                 id="secondary_major" 
-                                value={getEducation?.response?.data?.secondary_major}
-                                onChange={updateEducationCredentials("secondary_major")}
+                                defaultValue={getEducation?.response?.data?.secondary_major}
+                                onChange={updateEducationFunction("secondary_major")}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
                                 placeholder="Type to search" autoComplete='off' 
                                 required/>
@@ -1006,8 +1269,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 type="text" 
                                 id="company"
-                                value={getEducation?.response?.data?.degree_type}
-                                onChange={updateEducationCredentials("degree_type")} 
+                                defaultValue={getEducation?.response?.data?.degree_type}
+                                onChange={updateEducationFunction("degree_type")} 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " 
                                 placeholder="M.F.A." 
                                 autoComplete='off' 
@@ -1018,9 +1281,9 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <select 
                                 id="graduation_year" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
-                                value={getEducation?.response?.data?.graduation_year}
-                                onChange={updateEducationCredentials("graduation_year")} >
-                                    <option selected></option>
+                                defaultValue={getEducation?.response?.data?.graduation_year}
+                                onChange={updateEducationFunction("graduation_year")} >
+                                    <option selected>{getEducation?.response?.data?.graduation_year}</option>
                                     {
                                         allYears.map((x,ind)=>(
                                             <option key={ind}>{x}</option>
@@ -1073,15 +1336,15 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 </div>
                 {/* form  */}
                 
-                <form onSubmit={handleLivingCredentials}>
+                <form onSubmit={handleLocationUpdateForm}>
                     <div className="border-x border-b mx-5 mb-5">
                             <div className="mb-6 px-5 pt-3">
                                 <label htmlFor="location" className="block mb-2 font-medium  text-gray-900 ">Location (required)</label>
                                 <input 
                                 type="text" 
                                 id="location" 
-                                value={getLocation?.response?.data.location}
-                                onChange={updateLocationCredentials("location")}
+                                defaultValue={getLocation?.response?.data?.location}
+                                onChange={updateLocationFunction("location")}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 " placeholder='Location' autoComplete='off' 
                                 required/>
                             </div>
@@ -1091,8 +1354,8 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <select 
                                 id="start_year" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
-                                onChange={updateLocationCredentials("start_year")}  value={getLocation?.response?.data.start_year}>
-                                    <option selected></option>
+                                onChange={updateLocationFunction("start_year")}  defaultValue={getLocation?.response?.data?.start_year}>
+                                    <option selected>{getLocation?.response?.data?.start_year}</option>
                                     {
                                         allYears.map((x,ind)=>(
                                             <option className='py-2 text-lg' key={ind}>{x}</option>
@@ -1100,16 +1363,16 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                     }
                                     </select>
                             </div>
-                            {!getLocation?.response?.data?.end_year === 5000 && 
+                            {updateStillLiving && 
                             <div className="mb-6 px-5 mt-5">
                                 <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">End Year</label>
                                 <select 
                                 id="start_year" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 "
-                                onChange={updateLocationCredentials("end_year")}>
+                                onChange={updateLocationFunction("end_year")} defaultValue={getLocation?.response?.data?.end_year}>
                                     <option selected></option>
                                     {
-                                        allYears.map((x,ind)=>(
+                                        livingYears.map((x,ind)=>(
                                             <option className='py-2 text-lg' key={ind}>{x}</option>
                                         ))
                                     }
@@ -1120,9 +1383,9 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                                 <input 
                                 id="default-checkbox" 
                                 type="checkbox" 
-                                // onClick={()=>setStillLivingThere(!stillLivingThere)}
-                                checked={getLocation?.response?.data?.end_year === 5000}
-                                className="w-5 h-5 text-blue-600 "/>
+                                onClick={()=>setUpdateStillLiving(!updateStillLiving)}
+                                defaultChecked={Number(getLocation?.response?.data?.end_year) === 5000}
+                                className="w-5 h-5 text-blue-600 cursor-pointer"/>
                                 <label htmlFor="default-checkbox" className="ml-2 text-sm font-medium text-gray-900">I currently live here</label>
                             </div>
                     </div>
@@ -1137,8 +1400,6 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 </form>
             </main>
         </section>
-
-        
 
         </div>
     </div>

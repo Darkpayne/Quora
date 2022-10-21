@@ -21,7 +21,6 @@ const useAxiosGet = (url) => {
                      {
                     headers: {
                     'Authorization': auth ? `Bearer ${auth}` : undefined,
-
                 },
                 }
                 );

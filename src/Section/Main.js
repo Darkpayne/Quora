@@ -3,23 +3,15 @@ import { Link } from 'react-router-dom'
 import SinglePost from '../Components/SinglePost'
 import useToastify from '../Hooks/useToastify'
 import { ToastContainer } from 'react-toastify';
-import { Editor } from '@tinymce/tinymce-react';
-import { useRef } from 'react';
 import axios from 'axios';
 import AuthContext from '../ContextApi/AuthContext';
 import { Skeleton } from '@mantine/core';
 
 
 const Main = ({loggedInUser, getPost,isLoading}) => {
+
   const {user} = useContext(AuthContext)
   const {createToast}=useToastify();
-
-  const editorRef = useRef(null);
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
-  };
 
   const [showModal, setShowModal] = useState(false)
   const [askQuestion, setAskQuestion] = useState(true)
@@ -255,54 +247,18 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
                 {/* <FroalaEditor tag='textarea'/> */}
                 <div id="createPost" className=" px-4" >
                   <form onSubmit={handlePost} action="">
-                  <Editor
-                    apiKey='6p3s10ba2nu1o64j67x6hvnusqgz28iaidgs39b0t061s2q7'
-                    onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue=""
-                    value={value}
-                    onEditorChange={(newValue, editor) => setValue(newValue)}
-                    
-                    init={{
-                      height: 400,
-                      menubar: false,
-                      plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help','quickbars', 'image', 'editimage'
-                      ],
-                      quickbars_image_toolbar: false,
-                      toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help | link | image |underline ',
-                        automatic_uploads: true,
-                        image_uploadtab: false,
-                        file_picker_types: 'image',
-                        file_picker_callback: (cb, value, meta) => {
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-                        input.setAttribute('accept', 'image/*');
-                    
-                        input.addEventListener('change', (e) => {
-                          const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.addEventListener('load', () => {
-                            const id = 'blobid' + (new Date()).getTime();
-                            const blobCache =  this.activeEditor.editorUpload.blobCache;
-                            const base64 = reader.result.split(',')[1];
-                            const blobInfo = blobCache.create(id, file, base64);
-                            blobCache.add(blobInfo);
-                            cb(blobInfo.blobUri(), { title: file.name });
-                          });
-                          reader.readAsDataURL(file);
-                        });
-                    
-                        input.click();
-                      },
-                      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                     
-                    }}
-                  />
+                  <div className="mb-6 px-5 pt-3">
+                        <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Title</label>
+                        <input 
+                        type="text"
+                        id="name" 
+                        className="bg-gray-50 border outline-none border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 "
+                        autoComplete='off' 
+                        required/>
+                    </div>
+                    <div className="mb-6 px-5">
+                    <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Body</label>
+                    <textarea id="message" rows="15" className="block p-2.5 w-full border-gray-300 text-sm text-gray-900 border outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea></div>
                   {/* <div className="myTextarea" contentEditable>hello</div> */}
                   {/* <Editor
                     editorState={EditorState}
@@ -311,7 +267,7 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
                     editorClassName="editorClassName"
                     onEditorStateChange={this.onEditorStateChange}
                   /> */}
-              <div className="flex justify-between items-center rounded-b py-2 px-4">
+              <div className="flex justify-between items-center border-t rounded-b py-2 px-4">
                 <div className="flex space-x-2 ">
                     <button  type="button" className="text-gray-500 bg-white focus:outline-none border border-transparent hover:border-blue-400 hover:border text-sm font-medium px-2 ">
                       <span className='text-2xl font-bold '><ion-icon name="text-outline"></ion-icon></span>
@@ -321,7 +277,7 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
                     <button  type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Post</button>
               </div>
             </form>
-            </div>
+              </div>
           </section>
           
 

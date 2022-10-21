@@ -4,7 +4,6 @@ import useToastify from './useToastify'
 
 const useAxios = ({url}) => {
     const {createToast}=useToastify();
-
     const [isLoading, setIsLoading] = useState(false)
     const [response, setResponse] = useState(null)
     const [fetchedData, setFetchData] = useState(false)

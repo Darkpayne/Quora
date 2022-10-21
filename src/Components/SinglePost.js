@@ -3,7 +3,7 @@ import SingleComment from './SingleComment'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-const SinglePost = ({isLoading, post}) => {
+const SinglePost = ({isLoading}) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -61,9 +61,6 @@ const SinglePost = ({isLoading, post}) => {
             <button href="#" className="py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 rounded-full">
                 <div className=''><span className='text-lg flex'><ion-icon name="arrow-redo-outline"></ion-icon></span></div> 
             </button>
-            {/* <button href="#" className="py-2 px-4 text-sm font-medium text-gray-900 rounded-full hover:bg-gray-100 hover:text-blue-700 focus:z-10 ">
-                <div className=''><span className='text-lg flex'><ion-icon name="ellipsis-horizontal-outline"></ion-icon></span></div> 
-            </button> */}
             
           </div>
 
@@ -96,8 +93,6 @@ const SinglePost = ({isLoading, post}) => {
 
             {/* Comments */}
             <SingleComment />
-            
-            
             {/* Comments end */}
         </section>
          }

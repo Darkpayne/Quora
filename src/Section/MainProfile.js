@@ -17,7 +17,6 @@ const MainProfile = ({isLoading, response}) => {
       setShowComment(!showComment);
     }
 
-
     const {user} = useContext(AuthContext)
 
     const {createToast}=useToastify();
@@ -73,6 +72,12 @@ const MainProfile = ({isLoading, response}) => {
                 window.location.reload();
             }, 1000);
 
+            // setShowComment(prev=> {
+            //     let newdata = prev
+            //     prev.name = res.name
+            //     return prev
+            // })
+    
             console.log(res);
         } catch (error) {
             setShowToast(true)

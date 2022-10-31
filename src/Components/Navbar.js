@@ -8,7 +8,6 @@ import useAxiosGet from '../Hooks/useAxiosGet';
 const Navbar = ({navigation}) => {
   const {dispatch} = useContext(AuthContext);
   const {response} = useAxiosGet('/api/auth/get-user');
-  console.log(response);
   const [searchFocus, setSearchFocus] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 

@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import AuthContext from '../ContextApi/AuthContext';
 import { Skeleton } from '@mantine/core';
+import { useCallback } from 'react';
 
 
 const Main = ({loggedInUser, getPost,isLoading}) => {
@@ -39,41 +40,63 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
   }
 
   const [showToast, setShowToast] = useState(false) 
-  const [value, setValue] = useState('');
 
-
-  const handlePost = async (e) =>{
-    console.log('done');
-    e.preventDefault();
-    try {
-        const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/create-post', {
-           title : 'hello',
-           body : JSON.stringify(value)
-        },{
-            headers: {
-            'Authorization': `Bearer ${user?.token}`,
-        },
-        })
-        setShowModal(false);
-        setShowToast(true)
-        createToast({
-            msg: res.data.message,
-            dataType: true
-        })
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
-        console.log(res);
-    } catch (error) {
-        setShowToast(true)
-        createToast({
-            msg: error?.response?.data.message,
-            dataType: false
-        })
-        console.log(error);
-    }
+// UPDATE IMAGE TO SHOW BESIDE TEXTAREA *******************************************************************************************************
+const [imageSrc, setImageSrc] = useState(null)
+const [imageFile, setImageFile] = useState(null);
+const showImage = (e) =>{
+  const image = e.target.files[0];
+  if (image){ 
+    setImageSrc(URL.createObjectURL(image))
+    setImageFile(image);
+  }
 }
 
+// MAKE POST *******************************************************************************************************
+ const SendPostValues = {
+        title: "",
+        body: "",
+    }
+
+     const [sendPost, setsendPost] = useState(SendPostValues);
+
+     const sendPostFunction = useCallback((type) => (event)=>{
+      setsendPost({...sendPost , [type]: event.target.value })
+     }, [sendPost]);
+
+     const handlePost = async (e) =>{
+      console.log('done');
+      e.preventDefault();
+      try {
+          const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/create-post', {
+            title : sendPost.title,
+            body : sendPost.body,
+            post_image: imageFile
+          },{
+              headers: {
+              'Authorization': `Bearer ${user?.token}`,
+              'Content-Type': 'multipart/form-data'
+          },
+          })
+          setShowModal(false);
+          setShowToast(true)
+          createToast({
+              msg: res.data.message,
+              dataType: true
+          })
+          setTimeout(() => {
+              window.location.reload();
+          }, 1000);
+          console.log(res);
+      } catch (error) {
+          setShowToast(true)
+          createToast({
+              msg: error?.response?.data.message,
+              dataType: false
+          })
+          console.log(error);
+      }
+    }
 
   return (
     <>
@@ -105,17 +128,17 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
         {/* EACH POST */}
       {isLoading ?
       <div className="">
-      <div className="my-5">
-       <Skeleton>
-          <SinglePost/>
-       </Skeleton>
-      </div>
-      
-      <div className="my-5">
-       <Skeleton>
-          <SinglePost/>
-       </Skeleton>
-      </div>
+        <div className="my-5">
+        <Skeleton>
+            <SinglePost/>
+        </Skeleton>
+        </div>
+        
+        <div className="my-5">
+        <Skeleton>
+            <SinglePost/>
+        </Skeleton>
+        </div>
       </div>
       :<div className="">
       {
@@ -251,28 +274,43 @@ const Main = ({loggedInUser, getPost,isLoading}) => {
                         <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Title</label>
                         <input 
                         type="text"
-                        id="name" 
+                        id="name"
+                        value={sendPost.title}
+                        onChange={sendPostFunction("title")} 
                         className="bg-gray-50 border outline-none border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 "
                         autoComplete='off' 
                         required/>
                     </div>
                     <div className="mb-6 px-5">
-                    <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Body</label>
-                    <textarea id="message" rows="15" className="block p-2.5 w-full border-gray-300 text-sm text-gray-900 border outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea></div>
-                  {/* <div className="myTextarea" contentEditable>hello</div> */}
-                  {/* <Editor
-                    editorState={EditorState}
-                    toolbarClassName="toolbarClassName"
-                    wrapperClassName="wrapperClassName"
-                    editorClassName="editorClassName"
-                    onEditorStateChange={this.onEditorStateChange}
-                  /> */}
+                          <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 ">Body</label>
+                      <div className="flex border">
+                        <div className="basis-3/4">
+                          <textarea 
+                          id="message" 
+                          value={sendPost.body}
+                          onChange={sendPostFunction("body")}
+                          rows="10" 
+                          className="block p-2.5 w-full text-sm text-gray-900 outline-none rounded-lg placeholder:text-base resize-none" placeholder={`Say something....`}></textarea>
+                        </div>
+                        <div className="basis-1/4 relative p-2">
+                          <img src={imageSrc} alt="" className='relative'/>
+                          {imageSrc && <span onClick={()=>setImageSrc(null)} className='absolute -top-1 -right-3 cursor-pointer text-3xl bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full flex items-center'><ion-icon name="close-outline"></ion-icon></span>}
+                        </div>
+                      </div>
+                    </div>
               <div className="flex justify-between items-center border-t rounded-b py-2 px-4">
                 <div className="flex space-x-2 ">
                     <button  type="button" className="text-gray-500 bg-white focus:outline-none border border-transparent hover:border-blue-400 hover:border text-sm font-medium px-2 ">
                       <span className='text-2xl font-bold '><ion-icon name="text-outline"></ion-icon></span>
                     </button>
-                    <button  type="button" className="text-gray-500 bg-whitefocus:outline-none border border-transparent hover:border-blue-400 hover:border text-sm font-medium px-2 "><span className='text-2xl font-bold '><ion-icon name="images-outline"></ion-icon></span></button>
+                    <input 
+                      type="file" 
+                      id="img-upload"
+                      onChange={showImage}
+                      className='hidden' />
+                      <label htmlFor="img-upload" className={`cursor-pointer text-2xl w-10 h-10 flex justify-center items-center text-gray-500`}>
+                      <ion-icon name="images-outline"></ion-icon>
+                      </label>
                 </div>
                     <button  type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Post</button>
               </div>

@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import SingleComment from './SingleComment'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import useAxiosGet from '../Hooks/useAxiosGet'
 
-const SinglePost = ({isLoading}) => {
-
+const SinglePost = ({post}) => {
+    const { response} = useAxiosGet('/api/user/all-users');
     const [showComment, setShowComment] = useState(false)
-
+    console.log(post);
+    console.log(response);
     const toggleComments = (e) =>{
       e.preventDefault();
       setShowComment(!showComment);
@@ -14,14 +16,13 @@ const SinglePost = ({isLoading}) => {
 
   return (
     <div>
-        
       <main className='my-3 bg-white border'>
         <div className="relative">
             <div className="flex items-center px-4 pt-4">
               <img src="https://www.xtrafondos.com/thumbs/1_3617.jpg" alt="" className='h-10 w-10 rounded-full mr-4' />
               <div className="grow">
-                  <h6 className='text-sm font-semibold'>That's Funny Stuff .  <span className='text-sm text-blue-500'>Follow</span></h6>
-                  <h6 className='text-sm text-gray-500'>Posted by Joshua Clifford .  <span className='text-sm'>Sep 14</span></h6>
+                  <h6 className='text-sm font-semibold capitalize'>{post?.title} ∙  <span className='text-sm text-blue-500'>Follow</span></h6>
+                  <h6 className='text-sm text-gray-500'>Posted by {'Joshua Clifford'} ∙  <span className='text-sm'>{'Sep 14'}</span></h6>
               </div>
               <div className="absolute top-4 right-5 hover:bg-gray-100 rounded-full">
                   <span className='text-2xl h-10 w-10 cursor-pointer flex items-center justify-center'>

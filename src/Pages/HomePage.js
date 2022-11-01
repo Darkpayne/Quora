@@ -9,7 +9,7 @@ import SpacesToFollow from '../Section/SpacesToFollow'
 const HomePage = () => {
   const { response:loggedInUser } = useAxiosGet('/api/auth/get-user');
   const { response:getPost, isLoading} = useAxiosGet('/api/user/allposts');
-
+  
   const navigation = 'home'
   return (
     <>

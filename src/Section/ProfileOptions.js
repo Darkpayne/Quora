@@ -8,12 +8,12 @@ import useToastify from '../Hooks/useToastify'
 import { ToastContainer } from 'react-toastify';
 
 const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLocation}) => {
-    console.log(getEmployment?.response?.data);
-    console.log(getEducation?.response?.data);
-    console.log(getLocation?.response?.data);
-    console.log(response);
+    // console.log(getEmployment?.response?.data);
+    // console.log(getEducation?.response?.data);
+    // console.log(getLocation?.response?.data);
+    // console.log(response);
     const {user} = useContext(AuthContext);
-    console.log(user);
+    // console.log(user);
 
 
     const [showToast, setShowToast] = useState(false)
@@ -82,7 +82,7 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
     }
 
 
-    const date =new Date(response?.created_at);
+    const date = new Date(response?.created_at);
 
     // checkbox to see if he still works there
     const [stillWorkingThere, setStillWorkingThere] = useState(false);

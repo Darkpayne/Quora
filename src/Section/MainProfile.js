@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import SingleComment from '../Components/SingleComment'
 
 const MainProfile = ({isLoading, response}) => {
+    console.log(response);
     const [showPost, setshowPost] = useState(false)
     const [showComment, setShowComment] = useState(false)
 

@@ -8,7 +8,7 @@ import AuthContext from '../ContextApi/AuthContext'
 
 const Profile = () => {
   const {user} = useContext(AuthContext)
-  console.log(user);
+  // console.log(user);
   const {isLoading, response} = useAxiosGet('/api/auth/get-user');
   const getEmployment = useAxiosGet(`api/credential/employment/${user?.user?.id}`);
   const getEducation = useAxiosGet(`api/credential/education/${user?.user?.id}`);

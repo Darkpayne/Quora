@@ -141,11 +141,12 @@ const showImage = (e) =>{
         </Skeleton>
         </div>
       </div>
-      :<div className="">
+      :
+      <div className="">
       {
-        getPost.map((post, index)=>{
+        getPost.map((post)=>{
           return (
-            <SinglePost key={index} post={post}/>
+            <SinglePost key={post.id} post={post}/>
           )
         })
         }

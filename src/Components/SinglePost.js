@@ -3,12 +3,19 @@ import SingleComment from './SingleComment'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import useAxiosGet from '../Hooks/useAxiosGet'
+import axios from 'axios'
+import AuthContext from '../ContextApi/AuthContext'
+import { useContext } from 'react'
 
 const SinglePost = ({post}) => {
     const { response } = useAxiosGet(`/api/user/userProfile/${post?.user_id}`);
-    const [showComment, setShowComment] = useState(false)
-    const [userInfo, setUserInfo] = useState([])
+    const { response:GetComment, fetchData } = useAxiosGet(`api/user/comments/${post?.id}`);
 
+    // useEffect(() => {
+    //   fetchData();
+    // }, [GetComment])
+    const {user}  = useContext(AuthContext);
+    const [showComment, setShowComment] = useState(false)
 
     const toggleComments = (e) =>{
       e.preventDefault();
@@ -18,21 +25,49 @@ const SinglePost = ({post}) => {
 
     const truncateString = (string = '', maxLength = 100) => showMore && string.length > maxLength ? `${string.substring(0, maxLength)}` : string ;
 
-    // const truncateString = (string = '', maxLength = 100) => {
-    //   if(string.length > maxLength){
-    //     return `${string.substring(0, maxLength)}`
-    //   }else{
-    //     setShowMore(false);
-    //     return string 
-    //   }
-    // }
+    // HANDLING THE COMMENTS
+    const [comment, setComment] = useState('')
+
+    const handleCommentButton =async (e) =>{
+      e.preventDefault();
+      if (comment === "") return alert('error');
+      try {
+          const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/user/add-comment', {
+              post_id : post?.id,
+              user_id : user?.user?.id,
+              body : comment
+          },{
+              headers: {
+              'Authorization': `Bearer ${user?.token}`,
+          },
+        })
+        setComment('');
+        fetchData();
+        // setShowToast(true)
+        // createToast({
+        //     msg: res.data.message,
+        //     dataType: true
+        // })
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 1000);
+        console.log(res);
+    } catch (error) {
+        // setShowToast(true)
+        // createToast({
+        //     msg: error?.response?.data.message,
+        //     dataType: false
+        // })
+        console.log(error);
+    }
+    }
 
   return (
     <div>
       <main className='my-3 bg-white border'>
         <div className="relative">
             <div className="flex items-center px-4 pt-4">
-              <img src="https://www.xtrafondos.com/thumbs/1_3617.jpg" alt="" className='h-10 w-10 rounded-full mr-4' />
+              <img  src={response?.data?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.data?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='h-10 w-10 rounded-full mr-4' />
               <div className="grow">
                   <h6 className='text-sm font-semibold capitalize'>{post?.title} ∙  <span className='text-sm text-blue-500'>Follow</span></h6>
                   <h6 className='text-sm text-gray-500'>Posted by <span className='hover:underline cursor-pointer'> {response?.data?.name} </span>∙ <span className='text-sm'>{new Date(post?.created_at).toDateString()}</span></h6>
@@ -70,7 +105,7 @@ const SinglePost = ({post}) => {
             </button>
 
               <button onClick={toggleComments} href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white  border-gray-200 hover:bg-gray-100 hover:text-blue-700  focus:text-blue-700 flex rounded-full">
-                <div className=' mr-2'><span className='text-lg flex'><ion-icon name="chatbubble-ellipses-outline"></ion-icon></span></div>
+                <div className=' mr-2'><span className='text-lg flex'><ion-icon name="chatbubble-ellipses-outline"></ion-icon></span></div> {GetComment?.length === 0 ? '' : GetComment?.length}
             </button>
           </div>
 
@@ -85,32 +120,23 @@ const SinglePost = ({post}) => {
         {showComment &&
        
         <section>
-            {/* Comment INput field */}
+            {/* Comment Input field */}
             <div className="relative bg-gray-100">
                 <div className="flex items-center px-4 py-4">
-
-                    <img src="https://www.xtrafondos.com/thumbs/1_3617.jpg" alt="" className='h-10 w-10 rounded-full mr-4' />
-                
-                
-                    <form className='grow flex'>
-                    <label htmlFor="simple-search" className="sr-only">Search</label>
-                        <div className="relative w-full">
-                            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
-                            </div>
-                            <input type="text" id="simple-search" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 " placeholder="Search" required/>
-                        </div>
-                        <button type="submit" className="px-2 py-1 ml-2 font-medium text-white bg-blue-700 shrink-0 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-xs">
+                    <img  src={user?.user?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${user?.user?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='h-10 w-10 rounded-full mr-4' />
+                    <form className='grow flex' onSubmit={handleCommentButton}>
+                      <label htmlFor="simple-search" className="sr-only">Search</label>
+                        <div className="w-full flex  items-center">
+                            <textarea rows="1" id="simple-search" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl outline-none block w-full pl-5 p-2 " onChange={e=>setComment(e.target.value)} value={comment} placeholder="Add comment . . ." required></textarea>
+                            <button type="submit" className="px-3 py-2 ml-2 font-medium text-white bg-blue-700 shrink-0 rounded-full border border-blue-700 hover:bg-blue-800 focus:outline-none text-xs ">
                             Add comment
                         </button>
+                        </div>
                     </form>
                 </div>
             </div>
-            {/* Comment INput field end */}
-
-            {/* Comments */}
-            <SingleComment />
-            {/* Comments end */}
+            {/* Comment Input field end */}
+          {GetComment?.length !== 0 && <SingleComment GetComment={GetComment} /> }
         </section>
          }
       </main>

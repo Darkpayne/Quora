@@ -13,31 +13,31 @@ const useAxiosGet = (url) => {
     const [response, setResponse] = useState(null)
     const [error, setError] = useState("")
 
-    useEffect(() => {
-        setTimeout(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(url,
-                     {
-                    headers: {
-                    'Authorization': auth ? `Bearer ${auth}` : undefined,
-                },
-                }
-                );
-                setResponse(res.data)
-            } catch (error) {
-                    console.log(error?.message);
-                    setError(error);               
-            } finally{
-                setIsLoading(false);
+    const fetchData = async () => {
+        try {
+            const res = await axios.get(url,
+                 {
+                headers: {
+                'Authorization': auth ? `Bearer ${auth}` : undefined,
+            },
             }
+            );
+            setResponse(res.data)
+        } catch (error) {
+                console.log(error?.message);
+                setError(error);               
+        } finally{
+            setIsLoading(false);
         }
-        fetchData();
-        }, 1000);
+    }
+        useEffect(() => {
+            setTimeout(() => {
+            fetchData();
+            }, 2000);
 
-    }, [url])
+        }, [url])
 
-  return {isLoading, response, error}
+  return {isLoading, response, error, fetchData}
 }
 
 export default useAxiosGet

@@ -7,7 +7,7 @@ import AuthContext from '../ContextApi/AuthContext'
 import useToastify from '../Hooks/useToastify'
 import { ToastContainer } from 'react-toastify';
 
-const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLocation}) => {
+const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLocation,fetchUser}) => {
     // console.log(getEmployment?.response?.data);
     // console.log(getEducation?.response?.data);
     // console.log(getLocation?.response?.data);
@@ -75,6 +75,16 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
         setShowLocationCredential(true)
     }
 
+    const closeAll = () =>{
+        setGeneralCredential(false);
+        setShowCredential(false);
+        setShowWorkCredential(false)
+        setShowEducationCredential(false)
+        setShowLocationCredential(false)
+        setEditCredentials(false)
+        setShowModal(false)
+    }
+
     const [finalModal, setfinalModal] = useState(false)
 
     const finalModalButton = (id) =>{
@@ -115,11 +125,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                     msg: res.data.message,
                     dataType: true
                 })
-
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-
+                fetchUser();
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 1000);
+                closeAll();
                 console.log(res);
             } catch (error) {
                 setShowToast(true)
@@ -170,9 +180,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 msg: res.data.message,
                 dataType: true
             })
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchUser();
+            closeAll();
             console.log(res);
         } catch (error) {
             setShowToast(true)
@@ -223,9 +235,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 msg: res.data.message,
                 dataType: true
             })
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchUser();
+            closeAll()
             console.log(res);
         } catch (error) {
             setShowToast(true)
@@ -271,10 +285,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 dataType: true
             })
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchUser();
+            closeAll();
             console.log(res);
         } catch (error) {
             setShowToast(true)
@@ -322,10 +337,12 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 msg: res.data.message,
                 dataType: true
             })
+            fetchUser();
+            closeAll();
             console.log(res);
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
         } catch (error) {
             setShowToast(true)
             createToast({
@@ -388,9 +405,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 dataType: true
             })
             console.log(res);
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            closeAll();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchUser();
         } catch (error) {
             setShowToast(true)
             createToast({
@@ -435,9 +454,11 @@ const ProfileOptions = ({isLoading, response, getEmployment,getEducation,getLoca
                 msg: res.data.message,
                 dataType: true
             })
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchUser();
+            closeAll();
             console.log(res);
         } catch (error) {
             setShowToast(true)

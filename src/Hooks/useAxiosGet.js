@@ -33,7 +33,7 @@ const useAxiosGet = (url) => {
         useEffect(() => {
             setTimeout(() => {
             fetchData();
-            }, 2000);
+            }, 500);
 
         }, [url])
 

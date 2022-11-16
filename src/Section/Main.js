@@ -144,7 +144,7 @@ const showImage = (e) =>{
       :
       <div className="">
       {
-        getPost.map((post)=>{
+        getPost?.map((post)=>{
           return (
             <SinglePost key={post.id} post={post}/>
           )

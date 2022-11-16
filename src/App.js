@@ -15,6 +15,7 @@ import Spaces from "./Pages/Spaces.js";
 import Test from "./Pages/Test";
 import { useContext } from "react";
 import AuthContext from "./ContextApi/AuthContext";
+import AnotherUserProfile from "./Pages/AnotherUserProfile";
 
 function App() {
 
@@ -61,6 +62,7 @@ const Desktop = ({user}) => {
           <Route path="/questions" element={user ? <Questions /> : <Navigate to="/login"  />} />
           <Route path="/spaces" element={user ? <Spaces /> : <Navigate to="/login"  />} />
           <Route path="/notifications" element={user ? <Notification /> : <Navigate to="/login" />} />
+          <Route path="/user-profile/:id" element={user ? <AnotherUserProfile /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     

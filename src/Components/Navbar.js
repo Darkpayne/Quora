@@ -37,7 +37,7 @@ const Navbar = ({navigation}) => {
           </Link>
 
           
-          <Link to="/following" 
+          <Link to="/" 
            className={`text-2xl text-gray-500 ${navigation === 'following' && 'activeClass'} text-center  transition duration-500  cursor-pointer w-[35px]`}>
             <ion-icon name="newspaper-outline"></ion-icon>
           </Link>

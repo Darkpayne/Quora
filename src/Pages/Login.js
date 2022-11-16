@@ -176,7 +176,8 @@ const Login = () => {
                 });
                 console.log(res);
                 dispatch({type:"LOGIN_SUCCESS", payload:res.data})
-                window.location.replace("/");
+                // window.location.replace("/");
+                navigate('/');
             } catch (error) {
                 console.log(error.response.data.message);
                 setShowToast(true)

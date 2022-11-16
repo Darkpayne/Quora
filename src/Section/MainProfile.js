@@ -7,9 +7,10 @@ import AuthContext from '../ContextApi/AuthContext'
 import useToastify from '../Hooks/useToastify'
 import { ToastContainer } from 'react-toastify';
 import SingleComment from '../Components/SingleComment'
+import UniquePost from '../Components/UniquePost'
 
-const MainProfile = ({isLoading, response}) => {
-    console.log(response);
+const MainProfile = ({isLoading, response, ValidPost, fetchUser}) => {
+
     const [showPost, setshowPost] = useState(false)
     const [showComment, setShowComment] = useState(false)
 
@@ -59,7 +60,6 @@ const MainProfile = ({isLoading, response}) => {
             },{
                 headers: {
                 'Authorization': `Bearer ${user?.token}`,
-
             },
             })
             setShowModal(false);
@@ -68,18 +68,8 @@ const MainProfile = ({isLoading, response}) => {
                 msg: res.data.message,
                 dataType: true
             })
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-
-            // setShowComment(prev=> {
-            //     let newdata = prev
-            //     prev.name = res.name
-            //     return prev
-            // })
-    
-            console.log(res);
+            fetchUser();
+            setShowDescForm(true)
         } catch (error) {
             setShowToast(true)
             createToast({
@@ -111,9 +101,10 @@ const MainProfile = ({isLoading, response}) => {
                 msg: res.data.message,
                 dataType: true
             })
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            fetchUser();
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
             console.log(res);
         } catch (error) {
             setShowToast(true)
@@ -262,7 +253,7 @@ const MainProfile = ({isLoading, response}) => {
                         <li className='py-4 px-2 text-red-700 border-b-red-700 border-b-4'>Profile</li>
                         <li className='py-4 px-2'>0 Answer</li>
                         <li className='py-4 px-2'>0 Questions</li>
-                        <li className='py-4 px-2'>0 Post</li>
+                        <li className='py-4 px-2'>{ValidPost?.length} Post</li>
                         <li className='py-4 px-2'>0 Followers</li>
                         <li className='py-4 px-2'>Following</li>
                         <li className='py-4 px-2'>Edits</li>
@@ -283,87 +274,15 @@ const MainProfile = ({isLoading, response}) => {
 }
             </section>
 
+            {isLoading || 
             <section>
-                {showPost
+                {ValidPost?.length > 0
                 ?
-                <main className='my-3 bg-white '>
-        <div className="relative">
-            <div className="flex items-center px-4 pt-4">
-              <img src={response?.profile_photo ? `http://10.0.0.229/Interns/JonLee/QuoraBlog/public/uploads/profile_images/${response?.profile_photo}` : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png'} alt="" className='h-10 w-10 rounded-full mr-4' />
-              <div className="grow">
-                  <h6 className='text-sm font-semibold'> {response?.name } &#183;</h6>
-                  <h6 className='text-sm text-gray-500'>{response?.profile_credential} · <span>Sep 16</span></h6>
-              </div>
-            </div>
-        </div>
-        <div className="my-3 px-4">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias  reprehenderit fugiat tenetur iste quia, 
-        </div>
-        <div className="flex justify-center">
-          <img src="https://qph.cf2.quoracdn.net/main-qimg-99ba8dc3b31374e753c17a93203f04a6-pjlq" alt="" className='object-cover grow'/>
-        </div>
-
-
-        <div id='controls' className="px-4 py-1 flex justify-between border-b">
-          <div className="flex py-1 space-x-2">
-            <div className="inline-flex rounded-full ">
-              <a href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-l rounded-l-full border-gray-200 hover:bg-gray-100 hover:text-blue-700  focus:text-blue-700 flex">
-                <div className='-rotate-90'><span className='text-lg flex mx-2'><ion-icon name="arrow-redo-outline"></ion-icon></span></div> 
-              </a>
-              <a href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white rounded-r-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700">
-              <div className='rotate-90'><span className='text-lg flex mx-2'><ion-icon name="arrow-redo-outline"></ion-icon></span></div> 
-              </a>
-            </div>
-            <button href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700 flex rounded-full">
-                <div className=''><span className='text-lg flex justify-center items-center'><ion-icon name="sync-outline"></ion-icon></span></div>
-            </button>
-
-            <button onClick={toggleComments} href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white  border-gray-200 hover:bg-gray-100 hover:text-blue-700  focus:text-blue-700 flex  justify-center items-center rounded-full">
-                <div className=''><span className='text-lg flex justify-center text-center items-center'><ion-icon name="chatbubble-ellipses-outline"></ion-icon></span></div> 
-            </button>
-          </div>
-
-          <div className="flex justify-center items-center">
-            <button href="#" className="py-2 px-4 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 rounded-full">
-                <div className=''><span className='text-lg flex justify-center items-center'><ion-icon name="ellipsis-horizontal-outline"></ion-icon></span></div> 
-            </button>
-          </div>
-
-        </div>
-        {showComment &&
-       
-        <section>
-            {/* Comment INput field */}
-            <div className="relative bg-gray-100">
-                <div className="flex items-center px-4 py-4">
-
-                    <img src="https://www.xtrafondos.com/thumbs/1_3617.jpg" alt="" className='h-10 w-10 rounded-full mr-4' />
-                
-                
-                    <form className='grow flex'>
-                    <label htmlFor="simple-search" className="sr-only">Search</label>
-                        <div className="relative w-full">
-                            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
-                            </div>
-                            <input type="text" id="simple-search" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 " placeholder="Search" required/>
-                        </div>
-                        <button type="submit" className="px-2 py-1 ml-2 font-medium text-white bg-blue-700 shrink-0 rounded-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 text-xs">
-                            Add comment
-                        </button>
-                    </form>
-                </div>
-            </div>
-            {/* Comment INput field end */}
-
-            {/* Comments */}
-            <SingleComment />
-            
-            
-            {/* Comments end */}
-        </section>
-         }
-                </main>
+                <section>
+                    {ValidPost?.map((post, index) =>(
+                        <UniquePost key={index} post={post}/>
+                    ))}
+                </section>
                 :
                 <div className="">
                 { isLoading ?  <Skeleton /> : <section>
@@ -372,7 +291,7 @@ const MainProfile = ({isLoading, response}) => {
                 </div>
                 }
             </section>
-
+            }
                     {/* MODAL EMPLYMENT*/}
             <div id="defaultModal" tabIndex="-1" aria-hidden="true" data-modal-show="true" className={`${!showModal ? 'hidden': ''} bg-slate-800 bg-opacity-90 flex justify-center items-center transition-all ease-in-out top-0 right-0 bottom-0 left-0 z-50 h-screen fixed`}>
                 <div className={`relative p-4 w-full max-w-2xl h-full md:h-auto transition-all ease-in-out ${!showModal?'opacity-0 ':'opacity-100 '}`}>

@@ -199,7 +199,7 @@ const Login = () => {
     }
 
   return (
-    <div className="h-screen w-screen flex justify-center items-center" style={{backgroundImage:"url('./assets/bg-image.png')"}}>
+    <div className="min-h-screen w-screen flex justify-center items-center" style={{backgroundImage:"url('./assets/bg-image.png')"}}>
 
        <div className="bg-white w-[700px] h-[548px]">
 

@@ -49,6 +49,7 @@ const Login = () => {
                 msg: 'OTP sent!',
                 dataType: true
             })
+         
         } catch (error) {
             console.log(error.response.data.message);
             setShowToast(true)
@@ -60,7 +61,6 @@ const Login = () => {
             setIsLoading(false);
         }
     }
-
 
 
     // OTP VERIFICATION STARTS HERE *****************************************************
@@ -152,6 +152,7 @@ const Login = () => {
         }
 
     }
+
 
     // LOGIN FORM STARTS HERE **********************************************************
 
@@ -356,8 +357,8 @@ const Login = () => {
 
                     <section className={`${showEmailVerification && !isLoading ? 'block' : 'hidden'}`}>
                         <h2 className='px-5 mt-3 text-2xl'>Confirm your email</h2>
-                        <p className='px-5 mt-3 text-sm'>Please enter the code we sent to {emailOTP?.email}</p>
-
+                        <p className='px-5 mt-3 text-sm'>Please enter the code we sent to {emailOTP?.email}! {`Your OTP is ${emailOTP?.otp}`}.</p>
+                        
                         <form onSubmit={ShowlastModal}>
                         <div className="mb-6 px-5 mt-5">
                             <label htmlFor="name" className="block mb-2 font-medium  text-gray-900 "></label>
@@ -366,12 +367,13 @@ const Login = () => {
                             value={OTP}
                             onChange={(e)=>setOTP(e.target.value)}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none  block w-full p-2.5 " 
-                            placeholder='What would you like to be called?' autoComplete='off' 
+                            placeholder='Enter OTP' autoComplete='off' 
                             required/>
 
                         </div>    
                         <p className='text-xs px-5 mb-10 text-gray-500 hover:underline cursor-pointer'>Didn't recieve an email or something went wrong? Resend Code</p>
                     {/* Buttons */}
+                    
                    
                             <div className="flex justify-end items-center rounded-b border-t space-x-2 py-2 px-4">
                                 <button data-modal-toggle="defaultModal" type="submit" className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center">Next</button>

@@ -20,7 +20,9 @@ const SinglePost = ({post}) => {
   const { response:mainUser } = useAxiosGet(`/api/user/userProfile/${user?.user?.id}`);
   // the toast function to show notification
   const {createToast}=useToastify();
-
+  // fetches the likes of each post
+  const { response:Getlikes, fetchData:fetchLikes } = useAxiosGet(`api/post/votes/${post?.id}`);
+  console.log(Getlikes);
   const [showComment, setShowComment] = useState(false)
   const [showLoader, setShowLoader] = useState(true);
 
@@ -102,6 +104,68 @@ const SinglePost = ({post}) => {
     }
     }
 
+    // Like Post
+    const likePost = async (e) =>{
+      console.log('start');
+      e.preventDefault();
+      try {
+          const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/post/upvotes', {
+              user_id: user?.user?.id,
+              post_id: post?.id,
+              like: 1,
+              dislike: 0
+          },{
+              headers: {
+              'Authorization': `Bearer ${user?.token}`,
+          },
+        })
+        fetchLikes();
+        setShowToast(true)
+        createToast({
+            msg: res.data.message,
+            dataType: true
+        })
+        console.log(res);
+    } catch (error) {
+        setShowToast(true)
+        createToast({
+            msg: error?.response?.data.message,
+            dataType: false
+        })
+        console.log(error);
+    }
+    }
+    // Dislike Post
+    const dislikePost = async (e) =>{
+      e.preventDefault();
+      try {
+          const res = await axios.post('http://10.0.0.229/Interns/JonLee/QuoraBlog/public/api/post/upvotes', {
+              user_id: user?.user?.id,
+              post_id: post?.id,
+              like: 0,
+              dislike: 1
+          },{
+              headers: {
+              'Authorization': `Bearer ${user?.token}`,
+          },
+        })
+        fetchLikes();
+        setShowToast(true)
+        createToast({
+            msg: res.data.message,
+            dataType: true
+        })
+        console.log(res);
+    } catch (error) {
+        setShowToast(true)
+        createToast({
+            msg: error?.response?.data.message,
+            dataType: false
+        })
+        console.log(error);
+    }
+    }
+
   return (
     <div>
       <main className='my-3 bg-white border'>
@@ -135,12 +199,12 @@ const SinglePost = ({post}) => {
         <div id='controls' className="px-4 py-1 flex justify-between border-b">
           <div className="flex">
           <div className="inline-flex rounded-full ">
-              <a href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-l rounded-l-full border-gray-200 hover:bg-gray-100 hover:text-blue-700  focus:text-blue-700 flex">
-                <div className='-rotate-90'><span className='text-lg flex'><ion-icon name="arrow-redo-outline"></ion-icon></span></div>
-              </a>
-              <a href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white rounded-r-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700">
+              <div className="py-2 px-2 text-sm font-medium text-gray-900 cursor-pointer bg-white border-t border-b border-l rounded-l-full border-gray-200 hover:bg-gray-100 hover:text-blue-700  focus:text-blue-700 flex">
+                <div  onClick={likePost} className='-rotate-90'><span className='text-lg flex'><ion-icon name="arrow-redo-outline"></ion-icon></span></div> {Getlikes?.length === 0 ? '' : Getlikes?.length}
+              </div>
+              <div onClick={dislikePost} className="py-2 px-2 text-sm font-medium cursor-pointer text-gray-900 bg-white rounded-r-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700">
               <div className='rotate-90'><span className='text-lg flex'><ion-icon name="arrow-redo-outline"></ion-icon></span></div> 
-              </a>
+              </div>
             </div>
               <button href="#" className="py-2 px-2 text-sm font-medium text-gray-900 bg-white  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700 flex rounded-full">
                 <div className='mr-2'><span className='text-lg flex'><ion-icon name="sync-outline"></ion-icon></span></div> 

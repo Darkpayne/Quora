@@ -21,8 +21,11 @@ const AnotherUserMainProfile = ({isLoading, response,ValidPost,Followers, fetchF
     const {user} = useContext(AuthContext)
     let isFollowing = Followers?.following?.some((f)=>f.id = user?.user?.id) 
 
-    console.log(Followers?.following);
-    console.log(user);
+    useEffect(() => {
+        fetchFollower();
+    }, [Followers?.length]);
+
+    // console.log(Followers?.following);
     // function to follow user
     const followUser = async (e) =>{
         e.preventDefault();
@@ -51,7 +54,6 @@ const AnotherUserMainProfile = ({isLoading, response,ValidPost,Followers, fetchF
           console.log(error);
       }
       }
-
   return (
     <>
        <SkeletonTheme  highlightColor="white">
@@ -100,16 +102,16 @@ const AnotherUserMainProfile = ({isLoading, response,ValidPost,Followers, fetchF
                          <div className='flex space-x-1'>
                             <span onClick={followUser} className='cursor-pointer text-sm mt-2 flex items-center justify-center  rounded-full space-x-1'>
                                 {
-                                    Followers?.following?.some((f)=>f.id = user?.user?.id)  
+                                    Followers?.following?.find((f)=>f.id = user?.user?.id)  
                                     ?
-                                    <div className="flex space-x-1 bg-white text-blue-600 border-blue-600 border  py-1  px-3 rounded-full">
-                                <span className='flex text-base'><ion-icon name="git-merge-outline"></ion-icon></span>
-                                <span>{'Following'}</span>
+                                    <div className="flex space-x-1 bg-white text-blue-600 py-1 border border-blue-600 rounded-full px-3">
+                                        <span className='flex text-base'><ion-icon name="git-merge-outline"></ion-icon></span>
+                                    <span>{'Following'}</span>
                                     </div>
                                     :
-                                    <div className="flex space-x-1 bg-blue-600 text-white py-1  px-3">
-                                        <span className='flex text-base'><ion-icon name="person-add-outline"></ion-icon></span>
-                                    <span>{'Follow'}</span>
+                                    <div className="flex space-x-1 bg-blue-600 text-white   py-1  px-3 rounded-full">
+                                <span className='flex text-base'><ion-icon name="person-add-outline"></ion-icon></span>
+                                <span>{'Follow'}</span>
                                     </div>
                                 }
                                 

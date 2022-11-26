@@ -71,7 +71,7 @@ const Navbar = ({navigation}) => {
                     onBlur= {()=>setSearchFocus(false)}
                     className={`${ searchFocus ? 'w-[600px]': 'search-item'} p-2 pl-10 flex-shrink  text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:border-white active:border-white `} 
                     placeholder="Search Quora" 
-                    required/>
+                    />
                 </div>
             </form>
 
